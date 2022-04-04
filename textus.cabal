@@ -1,7 +1,18 @@
-cabal-version: 2.4
-name:          textus
-version:       0.1.0.0
+cabal-version:        2.4
+name:                 textus
+version:              0.1.0.0
+
+executable textus
+  main-is:            Main.hs
+  build-depends:      base >=4 && < 5
+                    , textus
+                    , polysemy
+                    , sqlite-simple
+                    , text
 
 library
-  exposed-modules: Textus
-  build-depends:   base >= 4 && < 5
+  exposed-modules:    Textus
+  build-depends:      base >= 4 && < 5
+                    , polysemy
+                    , sqlite-simple
+                    , text
