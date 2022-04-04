@@ -1,0 +1,7 @@
+cabal-version: 2.4
+name:          textus
+version:       0.1.0.0
+
+library
+  exposed-modules: Textus
+  build-depends:   base >= 4 && < 5
