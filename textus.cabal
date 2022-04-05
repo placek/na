@@ -17,6 +17,7 @@ library
   exposed-modules:    Textus
                     , Textus.Log
                     , Textus.VersesDB
+                    , Textus.WordsDB
   hs-source-dirs:     src
   build-depends:      base >= 4 && < 5
                     , polysemy
