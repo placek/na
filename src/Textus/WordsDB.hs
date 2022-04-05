@@ -1,9 +1,13 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Textus.WordsDB where
 
-import Polysemy
+import Data.Aeson
 import Data.Maybe
 import Data.Text
 import Database.SQLite.Simple
+import GHC.Generics (Generic)
+import Polysemy
 import Prelude hiding (Word)
 
 type BookNumber     = Int
@@ -24,7 +28,9 @@ data Word =
        , footnote    :: Text
        , version     :: Text
        , red         :: Bool
-       } deriving (Show)
+       } deriving (Eq, Show, Generic)
+
+instance ToJSON Textus.WordsDB.Word
 
 instance FromRow Word where
   fromRow = Word <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field

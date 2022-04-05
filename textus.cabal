@@ -18,10 +18,13 @@ library
                     , Textus.Log
                     , Textus.VersesDB
                     , Textus.WordsDB
+                    , Textus.Mustache
   hs-source-dirs:     src
   build-depends:      base >= 4 && < 5
+                    , aeson
                     , polysemy
                     , sqlite-simple
+                    , stache
                     , text
   default-extensions: BlockArguments
                     , DataKinds
