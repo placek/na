@@ -3,21 +3,29 @@
 <head>
   <meta charset="utf-8">
   <style>
-    @font-face { font-family: greek; src: url(/home/placek/Projects/books/NA27S/public/assets/fonts/newathu.ttf); }
-    @font-face { font-family: iosevka; src: url(/home/placek/Projects/books/NA27S/public/assets/fonts/iosevka.ttf); }
-    :root {
-      --nigrica:    #282828;
-      --rubrica:    #9d0006;
-      --didascalia: #504945;
+    @font-face                     { font-family: greek; src: url(./newathu.ttf); }
+    @font-face                     { font-family: iosevka; src: url(./iosevka.ttf); }
+    :root                          { --nigrica: #282828; --rubrica: #9d0006; --didascalia: #504945; }
+
+    @page {
+      size: B5 portrait;
+      @footnote { border-top: solid var(--nigrica) thin; padding-top: 1em; }
     }
+    @page:left { @top-left { content: "J " counter(chapter); color: var(--didascalia); font-family: iosevka; } }
+    @page:right { @top-right { content: "J " counter(chapter); color: var(--didascalia); font-family: iosevka; } }
+    @page:blank { @top-left { content: none; } @top-right { content: none; } @bottom-left { content: none; } @bottom-right { content: none; } }
+    @page:first { @top-left { content: none; } @top-right { content: none; } @bottom-left { content: none; } @bottom-right { content: none; } }
+
     body                           { font-size: 1.1em; text-align: justify; }
-    section                        { display: inline; }
-    p                              { display: inline; font-family: greek; align-content: space-between; color: var(--nigrica); margin: 0; padding: 1em 0; }
-    p:before                       { content: attr(id); font-size: .5em; white-space: pre; color: var(--didascalia); padding: 0; font-family: iosevka; font-weight: bold; }
-    section p:first-of-type:before { font-size: 1em; }
+    article                        { counter-reset: chapter; page-break-before: always; }
+    section                        { display: inline; counter-increment: chapter; }
+    p                              { display: inline; font-family: greek, serif; align-content: space-between; color: var(--nigrica); margin: 0; padding: 1em 0; }
+    p:before                       { content: attr(data-chapter) "." attr(data-verse); font-size: .5em; white-space: pre; color: var(--didascalia); padding: 0; font-family: iosevka; font-weight: bold; }
+    section p:first-of-type:before { content: attr(data-chapter); font-size: 1em; -prince-footnote-policy: keep-with-block; }
     span                           { padding: .2em; text-align: center; break-inside: avoid; display: inline-block;}
     span:after                     { content: attr(data-translation) "\a" attr(data-strong) " " attr(data-morphology); white-space: pre; font-size: .5em; color: var(--didascalia); font-family: iosevka; display: block; text-align: center; }
     span[data-red=true]            { color: var(--rubrica); }
+    span:not([data-footnote=""]):before { content: attr(data-footnote); font-size: .5em; color: var(--nigrica); text-align: left; float: footnote; }
   </style>
 </head>
 
