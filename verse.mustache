@@ -1,4 +1,7 @@
 <p data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">
+{{# comments }}
+<div class="criticism" data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">{{ cText }}</div>
+{{/ comments }}
 {{# words }}
 {{> word }}
 {{/ words }}
