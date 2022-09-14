@@ -48,7 +48,13 @@
     color: var(--didascalia);
   }
 }
-@page:first, @page:blank {
+@page:first {
+  @top-left     { content: none; }
+  @top-right    { content: none; }
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+@page:blank {
   @top-left     { content: none; }
   @top-right    { content: none; }
   @bottom-left  { content: none; }
