@@ -1,6 +1,6 @@
 module Main where
 
-import Textus
+import           Textus
 
 main :: IO ()
 main = app

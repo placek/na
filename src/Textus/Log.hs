@@ -1,7 +1,7 @@
 module Textus.Log where
 
-import Polysemy
-import Data.Text
+import           Data.Text
+import           Polysemy
 
 data Log m a where
   LogInfo :: Text -> Log m ()

@@ -1,9 +1,9 @@
 module Textus.VersesDB where
 
-import Polysemy
-import Data.Maybe
-import Data.Text
-import Database.SQLite.Simple
+import           Data.Maybe
+import           Data.Text
+import           Database.SQLite.Simple
+import           Polysemy
 
 type BookNumber    = Int
 type ChapterNumber = Int

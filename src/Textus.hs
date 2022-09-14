@@ -1,12 +1,16 @@
 module Textus where
 
-import Data.Text ( pack )
-import Database.SQLite.Simple ( Connection, close, open )
-import Polysemy ( runM, Members, Sem )
-import Textus.Log ( Log, logDebug, interpretLog )
-import Textus.WordsDB ( WordsDB, Word, readAllBookWords, interpretWordsDB, Commentary, readAllBookCommentaries, toVolume )
-import Textus.Mustache ( interpretMustache, renderTemplate )
-import Textus.VersesDB (VersesDB, Verse, readAllBookVerses, interpretVersesDB)
+import           Data.Text              (pack)
+import           Database.SQLite.Simple (Connection, close, open)
+import           Polysemy               (Members, Sem, runM)
+import           Textus.Log             (Log, interpretLog, logDebug)
+import           Textus.Mustache        (interpretMustache, renderTemplate)
+import           Textus.VersesDB        (Verse, VersesDB, interpretVersesDB,
+                                         readAllBookVerses)
+import           Textus.WordsDB         (Commentary, Word, WordsDB,
+                                         interpretWordsDB,
+                                         readAllBookCommentaries,
+                                         readAllBookWords, toVolume)
 
 getJohnVerses :: Members '[VersesDB, Log] r => Connection -> Sem r [Textus.VersesDB.Verse]
 getJohnVerses conn = do

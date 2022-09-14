@@ -2,14 +2,14 @@
 
 module Textus.WordsDB where
 
-import Data.Aeson
-import Data.List
-import Data.Maybe
-import Data.Text
-import Database.SQLite.Simple
-import GHC.Generics (Generic)
-import Polysemy
-import Prelude hiding (Word)
+import           Data.Aeson
+import           Data.List
+import           Data.Maybe
+import           Data.Text
+import           Database.SQLite.Simple
+import           GHC.Generics           (Generic)
+import           Polysemy
+import           Prelude                hiding (Word)
 
 type BookNumber     = Int
 type ChapterNumber  = Int
@@ -17,14 +17,14 @@ type VerseNumber    = Int
 type PositionNumber = Int
 
 data Commentary =
-  Commentary { cBookNumber :: BookNumber
+  Commentary { cBookNumber        :: BookNumber
              , cChapterNumberFrom :: ChapterNumber
-             , cVerseNumberFrom :: VerseNumber
-             , cChapterNumberTo :: ChapterNumber
-             , cVerseNumberTo :: VerseNumber
-             , isPreceding :: Bool
-             , marker :: Text
-             , cText :: Text
+             , cVerseNumberFrom   :: VerseNumber
+             , cChapterNumberTo   :: ChapterNumber
+             , cVerseNumberTo     :: VerseNumber
+             , isPreceding        :: Bool
+             , marker             :: Text
+             , cText              :: Text
              } deriving (Eq, Show, Generic)
 
 data Word =
@@ -43,18 +43,18 @@ data Word =
 
 data Verse =
   Verse { verseNumber :: VerseNumber
-        , words :: [Textus.WordsDB.Word]
-        , comments :: [Textus.WordsDB.Commentary]
+        , words       :: [Textus.WordsDB.Word]
+        , comments    :: [Textus.WordsDB.Commentary]
         } deriving (Eq, Show, Generic)
 
 data Chapter =
   Chapter { chapterNumber :: ChapterNumber
-          , verses :: [Textus.WordsDB.Verse]
+          , verses        :: [Textus.WordsDB.Verse]
           } deriving (Eq, Show, Generic)
 
 data Book =
   Book { bookNumber :: BookNumber
-       , chapters :: [Textus.WordsDB.Chapter]
+       , chapters   :: [Textus.WordsDB.Chapter]
        } deriving (Eq, Show, Generic)
 
 newtype Volume = Volume { books :: [Textus.WordsDB.Book] } deriving (Eq, Show, Generic)
@@ -88,9 +88,9 @@ instance Ord Word where
   compare (Word _ ba ca va pa _ _ _ _ _ _) (Word _ bb cb vb pb _ _ _ _ _ _) = compare (ba, ca, va, pa) (bb, cb, vb, pb)
 
 data WordsDB m a where
-  ReadAllBookWords :: Connection -> BookNumber -> WordsDB m [Word]
+  ReadAllBookWords        :: Connection -> BookNumber -> WordsDB m [Word]
   ReadAllBookCommentaries :: Connection -> BookNumber -> WordsDB m [Commentary]
-  ReadWord         :: Connection -> BookNumber -> ChapterNumber -> VerseNumber -> PositionNumber -> WordsDB m (Maybe Word)
+  ReadWord                :: Connection -> BookNumber -> ChapterNumber -> VerseNumber -> PositionNumber -> WordsDB m (Maybe Word)
 
 toVolume :: [Word] -> [Commentary] -> Volume
 toVolume values cs = Volume $ toBooks values cs

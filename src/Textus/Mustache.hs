@@ -2,10 +2,11 @@
 
 module Textus.Mustache where
 
-import Polysemy ( embed, interpret, makeSem, Embed, Sem, Member )
-import Data.Aeson ( ToJSON (toJSON) )
-import Text.Mustache ( compileMustacheFile, renderMustache )
+import           Data.Aeson        (ToJSON (toJSON))
 import qualified Data.Text.Lazy.IO as TIO
+import           Polysemy          (Embed, Member, Sem, embed, interpret,
+                                    makeSem)
+import           Text.Mustache     (compileMustacheFile, renderMustache)
 
 data Mustache m a where
   RenderTemplate :: ToJSON d => d -> Mustache m ()
