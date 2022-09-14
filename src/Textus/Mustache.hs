@@ -15,10 +15,10 @@ makeSem ''Mustache
 interpretMustache :: Member (Embed IO) r => Sem (Mustache ': r) a -> Sem r a
 interpretMustache = interpret \case
   RenderTemplate model -> embed $ do
-    volumeTemplate  <- compileMustacheFile "volume.mustache"
-    bookTemplate    <- compileMustacheFile "book.mustache"
-    chapterTemplate <- compileMustacheFile "chapter.mustache"
-    verseTemplate   <- compileMustacheFile "verse.mustache"
-    wordTemplate    <- compileMustacheFile "word.mustache"
+    volumeTemplate  <- compileMustacheFile "templates/volume.mustache"
+    bookTemplate    <- compileMustacheFile "templates/book.mustache"
+    chapterTemplate <- compileMustacheFile "templates/chapter.mustache"
+    verseTemplate   <- compileMustacheFile "templates/verse.mustache"
+    wordTemplate    <- compileMustacheFile "templates/word.mustache"
     let template = volumeTemplate <> bookTemplate <> chapterTemplate <> verseTemplate <> wordTemplate
     TIO.putStrLn $ renderMustache template (toJSON model)
