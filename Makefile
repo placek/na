@@ -1,21 +1,24 @@
-all: result.pdf
+TARGET := result.pdf
+PAGES  := $(wildcard pages/*.pdf)
+VOLUME := pages/99-volume
 
-app:
+$(TARGET): $(PAGES) $(VOLUME).pdf
+	pdfunite $? $@
+
+$(VOLUME).pdf: $(VOLUME).html
+	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -o /data/$@ /data/$?
+
+$(VOLUME).html: build
+	cabal run > $@
+	sed -i '1,3d'         $@
+	sed -i 's/&amp;/\&/g' $@
+	sed -i 's/&lt;/</g'   $@
+	sed -i 's/&gt;/>/g'   $@
+	sed -i 's/&quot;/"/g' $@
+
+build:
 	cabal build
 
-pages/99-volume.html: app
-	cabal run > pages/99-volume.html
-	sed -i '1,3d'         pages/99-volume.html
-	sed -i 's/&amp;/\&/g' pages/99-volume.html
-	sed -i 's/&lt;/</g'   pages/99-volume.html
-	sed -i 's/&gt;/>/g'   pages/99-volume.html
-	sed -i 's/&quot;/"/g' pages/99-volume.html
-
-pages/99-volume.pdf: pages/99-volume.html
-	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -o /data/pages/99-volume.pdf /data/pages/99-volume.html
-
-result.pdf: pages/99-volume.pdf
-	pdfunite pages/*.pdf result.pdf
-
+.PHONY: clean
 clean:
-	rm -rf pages/99-volume.html pages/99-volume.pdf result.pdf
+	rm -rf $(VOLUME).html $(VOLUME).pdf $(TARGET)
