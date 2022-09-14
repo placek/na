@@ -24,7 +24,7 @@
     p:before                       { content: attr(data-chapter) "." attr(data-verse); font-size: .5em; white-space: pre; color: var(--didascalia); padding: 0; font-family: iosevka, f1, f2, f3; font-weight: bold; }
     section p:first-of-type:before { content: attr(data-chapter); font-size: 1em; }
     span[data-strong]              { font-family: greek, f1, f2, f3; padding: .2em; text-align: center; break-inside: avoid; display: inline-block;}
-    span[data-strong]:after        { content: attr(data-translation) "\a" attr(data-strong) " " attr(data-morphology) "\a" attr(data-footnote); white-space: pre; font-size: .5em; color: var(--didascalia); font-family: iosevka, f1, f2, f3; display: block; text-align: center; }
+    span[data-strong]:after        { content: attr(data-translation) "\a" attr(data-strong) " " attr(data-morphology); white-space: pre; font-size: .5em; color: var(--didascalia); font-family: iosevka, f1, f2, f3; display: block; text-align: center; }
     span[data-red=true]            { color: var(--rubrica); }
     .criticism                     { font-size: .5em; color: var(--nigrica); text-align: left; float: footnote; font-family: iosevka, f1, f2, f3; }
     *::footnote-marker             { content: attr(data-chapter) "." attr(data-verse) " "; margin-right: 1em; }
