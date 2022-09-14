@@ -10,6 +10,7 @@ $(VOLUME).pdf: $(VOLUME).html
 
 $(VOLUME).html: build
 	cabal run > $@
+	@echo "FIXME: removing html entities with actual chars"
 	sed -i '1,3d'         $@
 	sed -i 's/&amp;/\&/g' $@
 	sed -i 's/&lt;/</g'   $@
