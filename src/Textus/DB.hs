@@ -27,6 +27,13 @@ data Commentary =
              , cText              :: Text
              } deriving (Eq, Show, Generic)
 
+data Latin =
+  Latin { lBookNumber    :: BookNumber
+        , lChapterNumber :: ChapterNumber
+        , lVerseNumber   :: VerseNumber
+        , lText          :: Text
+        } deriving (Eq, Show, Generic)
+
 data Word =
   Word { wId             :: Int
        , wBookNumber     :: BookNumber
@@ -46,6 +53,7 @@ data Verse =
   Verse { verseNumber :: VerseNumber
         , words       :: [Textus.DB.Word]
         , comments    :: [Textus.DB.Commentary]
+        , latin       :: Text
         } deriving (Eq, Show, Generic)
 
 data Chapter =
@@ -72,6 +80,9 @@ instance ToJSON Textus.DB.Commentary
 instance FromRow Commentary where
   fromRow = Commentary <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
 
+instance FromRow Latin where
+  fromRow = Latin <$> field <*> field <*> field <*> field
+
 instance FromRow Word where
   fromRow = Word <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
 
@@ -79,11 +90,14 @@ instance FromRow Word where
 instance Ord Commentary where
   compare (Commentary a b c _ _ _ _ _) (Commentary d e f _ _ _ _ _) = compare (a, b, c) (d, e, f)
 
+instance Ord Latin where
+  compare (Latin a b c _) (Latin d e f _) = compare (a, b, c) (d, e, f)
+
 instance Ord Word where
   compare (Word _ ba ca va pa _ _ _ _ _ _) (Word _ bb cb vb pb _ _ _ _ _ _) = compare (ba, ca, va, pa) (bb, cb, vb, pb)
 
 instance Ord Verse where
-  compare (Verse a _ _) (Verse b _ _) = compare a b
+  compare (Verse a _ _ _) (Verse b _ _ _) = compare a b
 
 instance Ord Chapter where
   compare (Chapter a _) (Chapter b _) = compare a b
@@ -94,6 +108,7 @@ instance Ord Book where
 -- DB effect
 data DB m a where
   ReadAllBookCommentaries :: Connection -> BookNumber -> DB m [Commentary]
+  ReadAllBookLatinVerses  :: Connection -> BookNumber -> DB m [Latin]
   ReadAllBookWords        :: Connection -> BookNumber -> DB m [Word]
 
 makeSem ''DB
@@ -101,6 +116,7 @@ makeSem ''DB
 interpretDB :: Member (Embed IO) r => Sem (DB ': r) a -> Sem r a
 interpretDB = interpret \case
   ReadAllBookCommentaries c bn  -> embed $ queryNamed c "SELECT * FROM commentaries WHERE book_number=:bn" [ ":bn" := bn ]
+  ReadAllBookLatinVerses  c bn  -> embed $ queryNamed c "SELECT book_number, chapter, verse, text FROM verses WHERE book_number=:bn" [ ":bn" := bn ]
   ReadAllBookWords        c bn  -> embed $ queryNamed c "SELECT * FROM words WHERE book=:bn" [ ":bn" := bn ]
 
 -- structure constructor
@@ -125,7 +141,7 @@ toChapters ws cs = fmap mkChapter wordsGroupedByChapter
 
 toVerses :: [Word] -> [Commentary] -> [Verse]
 toVerses ws cs = fmap mkVerse wordsGroupedByVerse
-  where mkVerse a                            = Verse (vn a) (sort a) (Prelude.filter (equal $ vn a) cs)
+  where mkVerse a                            = Verse (vn a) (sort a) (Prelude.filter (equal $ vn a) cs) ""
         vn a                                 = wVerseNumber . Prelude.head $ a
         wordsGroupedByVerse                  = Data.List.groupBy equalVerseNumbers ws
         equalVerseNumbers a b                = wVerseNumber a == wVerseNumber b

@@ -16,7 +16,6 @@ library
   import:             lang
   exposed-modules:    Textus
                     , Textus.Log
-                    , Textus.VersesDB
                     , Textus.DB
                     , Textus.Mustache
   hs-source-dirs:     src
