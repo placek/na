@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Textus.WordsDB where
+module Textus.DB where
 
 import           Data.Aeson
 import           Data.List
@@ -44,29 +44,29 @@ data Word =
 -- structure data types
 data Verse =
   Verse { verseNumber :: VerseNumber
-        , words       :: [Textus.WordsDB.Word]
-        , comments    :: [Textus.WordsDB.Commentary]
+        , words       :: [Textus.DB.Word]
+        , comments    :: [Textus.DB.Commentary]
         } deriving (Eq, Show, Generic)
 
 data Chapter =
   Chapter { chapterNumber :: ChapterNumber
-          , verses        :: [Textus.WordsDB.Verse]
+          , verses        :: [Textus.DB.Verse]
           } deriving (Eq, Show, Generic)
 
 data Book =
   Book { bookNumber :: BookNumber
-       , chapters   :: [Textus.WordsDB.Chapter]
+       , chapters   :: [Textus.DB.Chapter]
        } deriving (Eq, Show, Generic)
 
-newtype Volume = Volume { books :: [Textus.WordsDB.Book] } deriving (Eq, Show, Generic)
+newtype Volume = Volume { books :: [Textus.DB.Book] } deriving (Eq, Show, Generic)
 
 -- ToJSON instances
-instance ToJSON Textus.WordsDB.Word
-instance ToJSON Textus.WordsDB.Verse
-instance ToJSON Textus.WordsDB.Chapter
-instance ToJSON Textus.WordsDB.Book
-instance ToJSON Textus.WordsDB.Volume
-instance ToJSON Textus.WordsDB.Commentary
+instance ToJSON Textus.DB.Word
+instance ToJSON Textus.DB.Verse
+instance ToJSON Textus.DB.Chapter
+instance ToJSON Textus.DB.Book
+instance ToJSON Textus.DB.Volume
+instance ToJSON Textus.DB.Commentary
 
 -- FromRow instances
 instance FromRow Commentary where
@@ -91,17 +91,17 @@ instance Ord Chapter where
 instance Ord Book where
   compare (Book a _) (Book b _) = compare a b
 
--- WordsDB effect
-data WordsDB m a where
-  ReadAllBookCommentaries :: Connection -> BookNumber -> WordsDB m [Commentary]
-  ReadAllBookWords        :: Connection -> BookNumber -> WordsDB m [Word]
+-- DB effect
+data DB m a where
+  ReadAllBookCommentaries :: Connection -> BookNumber -> DB m [Commentary]
+  ReadAllBookWords        :: Connection -> BookNumber -> DB m [Word]
 
-makeSem ''WordsDB
+makeSem ''DB
 
-interpretWordsDB :: Member (Embed IO) r => Sem (WordsDB ': r) a -> Sem r a
-interpretWordsDB = interpret \case
+interpretDB :: Member (Embed IO) r => Sem (DB ': r) a -> Sem r a
+interpretDB = interpret \case
   ReadAllBookCommentaries c bn  -> embed $ queryNamed c "SELECT * FROM commentaries WHERE book_number=:bn" [ ":bn" := bn ]
-  ReadAllBookWords c bn  -> embed $ queryNamed c "SELECT * FROM words WHERE book=:bn" [ ":bn" := bn ]
+  ReadAllBookWords        c bn  -> embed $ queryNamed c "SELECT * FROM words WHERE book=:bn" [ ":bn" := bn ]
 
 -- structure constructor
 toVolume :: [Word] -> [Commentary] -> Volume
