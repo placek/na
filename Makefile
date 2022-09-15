@@ -20,6 +20,9 @@ $(VOLUME).html: build
 build:
 	cabal build
 
+edit: $(TARGET)
+	okular $?
+
 .PHONY: clean
 clean:
 	rm -rf $(VOLUME).html $(VOLUME).pdf $(TARGET)

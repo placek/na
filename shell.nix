@@ -4,5 +4,6 @@ import ./nix/shell.nix {
     pkgs.gnumake
     pkgs.sqlite
     pkgs.poppler_utils
+    pkgs.okular
   ];
 }
