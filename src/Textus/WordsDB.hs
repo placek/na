@@ -4,7 +4,6 @@ module Textus.WordsDB where
 
 import           Data.Aeson
 import           Data.List
-import           Data.Maybe
 import           Data.Text
 import           Database.SQLite.Simple
 import           GHC.Generics           (Generic)
@@ -22,23 +21,23 @@ data Commentary =
              , cVerseNumberFrom   :: VerseNumber
              , cChapterNumberTo   :: ChapterNumber
              , cVerseNumberTo     :: VerseNumber
-             , isPreceding        :: Bool
-             , marker             :: Text
+             , cIsPreceding       :: Bool
+             , cMarker            :: Text
              , cText              :: Text
              } deriving (Eq, Show, Generic)
 
 data Word =
-  Word { wordId      :: Int
-       , book        :: BookNumber
-       , chapter     :: ChapterNumber
-       , verse       :: VerseNumber
-       , position    :: PositionNumber
-       , text        :: Text
-       , strong      :: Text
-       , morphology  :: Text
-       , translation :: Text
-       , footnote    :: Text
-       , red         :: Bool
+  Word { wId             :: Int
+       , wBookNumber     :: BookNumber
+       , wChapterNumber  :: ChapterNumber
+       , wVerseNumber    :: VerseNumber
+       , wPositionNumber :: PositionNumber
+       , wText           :: Text
+       , wStrong         :: Text
+       , wMorphology     :: Text
+       , wTranslation    :: Text
+       , wFootnote       :: Text
+       , wRed            :: Bool
        } deriving (Eq, Show, Generic)
 
 data Verse =
@@ -90,34 +89,33 @@ instance Ord Word where
 data WordsDB m a where
   ReadAllBookWords        :: Connection -> BookNumber -> WordsDB m [Word]
   ReadAllBookCommentaries :: Connection -> BookNumber -> WordsDB m [Commentary]
-  ReadWord                :: Connection -> BookNumber -> ChapterNumber -> VerseNumber -> PositionNumber -> WordsDB m (Maybe Word)
 
 toVolume :: [Word] -> [Commentary] -> Volume
-toVolume values cs = Volume $ toBooks values cs
+toVolume ws cs = Volume $ toBooks ws cs
 
 toBooks :: [Word] -> [Commentary] -> [Book]
-toBooks values cs = sort $ fmap mkBook wordsGroupedByBook
-  where mkBook ws                               = Book (bn ws) (sort $ toChapters ws (Prelude.filter (equalBk ws) cs))
-        bn ws                                   = book . Prelude.head $ ws
-        wordsGroupedByBook                      = Data.List.groupBy equalBookNumbers values
-        equalBookNumbers a b                    = book a == book b
-        equalBk ws (Commentary b _ _ _ _ _ _ _) = b == bn ws
+toBooks ws cs = sort $ fmap mkBook wordsGroupedByBook
+  where mkBook a                             = Book (bn a) (sort $ toChapters a (Prelude.filter (equal $ bn a) cs))
+        bn a                                 = wBookNumber . Prelude.head $ a
+        wordsGroupedByBook                   = Data.List.groupBy equalBookNumbers ws
+        equalBookNumbers a b                 = wBookNumber a == wBookNumber b
+        equal a (Commentary b _ _ _ _ _ _ _) = a == b
 
 toChapters :: [Word] -> [Commentary] -> [Chapter]
-toChapters values cs = fmap mkChapter wordsGroupedByChapter
-  where mkChapter ws                            = Chapter (cn ws) (sort $ toVerses ws (Prelude.filter (equalCp ws) cs))
-        cn ws                                   = chapter . Prelude.head $ ws
-        wordsGroupedByChapter                   = Data.List.groupBy equalChapterNumbers values
-        equalChapterNumbers a b                 = chapter a == chapter b
-        equalCp ws (Commentary _ c _ _ _ _ _ _) = c == cn ws
+toChapters ws cs = fmap mkChapter wordsGroupedByChapter
+  where mkChapter a                          = Chapter (cn a) (sort $ toVerses a (Prelude.filter (equal $ cn a) cs))
+        cn a                                 = wChapterNumber . Prelude.head $ a
+        wordsGroupedByChapter                = Data.List.groupBy equalChapterNumbers ws
+        equalChapterNumbers a b              = wChapterNumber a == wChapterNumber b
+        equal a (Commentary _ c _ _ _ _ _ _) = a == c
 
 toVerses :: [Word] -> [Commentary] -> [Verse]
-toVerses values cs = fmap mkVerse wordsGroupedByVerse
-  where mkVerse ws                              = Verse (vn ws) (sort ws) (Prelude.filter (equalVn ws) cs)
-        vn ws                                   = verse . Prelude.head $ ws
-        wordsGroupedByVerse                     = Data.List.groupBy equalVerseNumbers values
-        equalVerseNumbers a b                   = verse a == verse b
-        equalVn ws (Commentary _ _ v _ _ _ _ _) = v == vn ws
+toVerses ws cs = fmap mkVerse wordsGroupedByVerse
+  where mkVerse a                            = Verse (vn a) (sort a) (Prelude.filter (equal $ vn a) cs)
+        vn a                                 = wVerseNumber . Prelude.head $ a
+        wordsGroupedByVerse                  = Data.List.groupBy equalVerseNumbers ws
+        equalVerseNumbers a b                = wVerseNumber a == wVerseNumber b
+        equal a (Commentary _ _ v _ _ _ _ _) = a == v
 
 makeSem ''WordsDB
 
@@ -125,4 +123,3 @@ interpretWordsDB :: Member (Embed IO) r => Sem (WordsDB ': r) a -> Sem r a
 interpretWordsDB = interpret \case
   ReadAllBookWords c bn  -> embed $ queryNamed c "SELECT * FROM words WHERE book=:bn" [ ":bn" := bn ]
   ReadAllBookCommentaries c bn  -> embed $ queryNamed c "SELECT * FROM commentaries WHERE book_number=:bn" [ ":bn" := bn ]
-  ReadWord c bn cn vn pn -> embed $ listToMaybe <$> queryNamed c "SELECT * FROM words WHERE book=:bn AND chapter=:cn AND verse=:vn AND position=:pn" [ ":bn" := bn, ":cn" := cn, ":vn" := vn, ":pn" := pn ]
