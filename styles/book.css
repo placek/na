@@ -7,9 +7,9 @@
 
 /* COLORS */
 :root {
-  --nigrica: #282828;
-  --rubrica: #9d0006;
-  --didascalia: #504945;
+  --nigrica: #073642;
+  --rubrica: #dc322f;
+  --didascalia: #586e75;
 }
 
 /* PAGES */
@@ -81,12 +81,8 @@ section {
 }
 p {
   display: inline;
-  align-content: space-between;
   color: var(--nigrica);
   margin: 0;
-  padding-top: 1em;
-  padding-bottom: 1em;
-  padding-left: 3em;
 }
 span {
   display: inline-block;
@@ -96,28 +92,19 @@ span {
 }
 p span:first-of-type:before {
   content: attr(data-chapter) "." attr(data-verse);
-  font-size: .75em;
+  font-size: .65em;
   white-space: pre;
   color: var(--didascalia);
   padding: 0;
   font-family: iosevka, f1, f2, f3;
   font-weight: bold;
-  margin-left: -60%;
-  margin-right: 30%;
+  margin-right: .5em;
 }
 section p:first-of-type span:first-of-type:before {
   content: attr(data-chapter);
   color: var(--nigrica);
   font-size: 1em;
 }
-/* p[data-latin]:after { */
-/*   display: none; */
-/*   content: attr(data-latin); */
-/*   font-size: .5em; */
-/*   color: var(--nigrica); */
-/*   text-align: left; */
-/*   font-family: iosevka, f1, f2, f3; */
-/* } */
 span[data-strong] {
   font-family: greek, f1, f2, f3;
   padding: .2em;
@@ -137,7 +124,15 @@ span[data-red=true] {
 }
 .criticism {
   font-size: .5em;
+  color: var(--didascalia);
+  text-align: left;
+  float: footnote;
+  font-family: iosevka, f1, f2, f3;
+}
+.latin {
+  font-size: .5em;
   color: var(--nigrica);
+  font-weight: bold;
   text-align: left;
   float: footnote;
   font-family: iosevka, f1, f2, f3;

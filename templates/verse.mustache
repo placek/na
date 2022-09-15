@@ -1,8 +1,9 @@
-<p data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}" data-latin="{{ latin }}">
+<p>
 {{# words }}
 {{> word }}
 {{/ words }}
 </p>
+<div class="latin" data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">{{ latin }}</div>
 {{# comments }}
 <div class="criticism" data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">{{ cText }}</div>
 {{/ comments }}
