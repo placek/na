@@ -10,8 +10,8 @@ import           Textus.DB              (Commentary, DB, Word, interpretDB,
 import           Textus.Log             (Log, interpretLog, logDebug)
 import           Textus.Mustache        (interpretMustache, renderTemplate)
 
-getJohnVerses :: Members '[DB, Log] r => Connection -> Sem r [Textus.DB.Latin]
-getJohnVerses conn = do
+getJohnLatinVerses :: Members '[DB, Log] r => Connection -> Sem r [Textus.DB.Latin]
+getJohnLatinVerses conn = do
   johnVerses <- readAllBookLatinVerses conn 500
   logDebug $ "found " <> (pack . show . Prelude.length $ johnVerses) <> " verses."
   return johnVerses
@@ -32,10 +32,9 @@ app :: IO ()
 app = do
   conn <- open "db.sqlite"
   runM . interpretDB . interpretLog . interpretMustache $ do
-    -- vs <- getJohnVerses conn
-    -- logDebug . pack .show $ vs
+    ls <- getJohnLatinVerses conn
     ws <- getJohnWords conn
     cs <- getJohnComments conn
-    renderTemplate $ toVolume ws cs
+    renderTemplate $ toVolume ws cs ls
     -- logDebug . pack . show $ toVolume ws cs
   close conn

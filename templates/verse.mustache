@@ -1,8 +1,8 @@
-<p data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">
-{{# comments }}
-<div class="criticism" data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">{{ cText }}</div>
-{{/ comments }}
+<p data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}" data-latin="{{ latin }}">
 {{# words }}
 {{> word }}
 {{/ words }}
 </p>
+{{# comments }}
+<div class="criticism" data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">{{ cText }}</div>
+{{/ comments }}

@@ -119,29 +119,39 @@ interpretDB = interpret \case
   ReadAllBookWords        c bn -> embed $ queryNamed c "SELECT * FROM words        WHERE book=:bn" [ ":bn" := bn ]
 
 -- structure constructor
-toVolume :: [Word] -> [Commentary] -> Volume
-toVolume ws cs = Volume $ toBooks ws cs
+toVolume :: [Word] -> [Commentary] -> [Latin] -> Volume
+toVolume ws cs ls = Volume $ toBooks ws cs ls
 
-toBooks :: [Word] -> [Commentary] -> [Book]
-toBooks ws cs = sort $ fmap mkBook wordsGroupedByBook
-  where mkBook a                             = Book (bn a) (sort $ toChapters a (Prelude.filter (equal $ bn a) cs))
-        bn a                                 = wBookNumber . Prelude.head $ a
-        wordsGroupedByBook                   = Data.List.groupBy equalBookNumbers ws
-        equalBookNumbers a b                 = wBookNumber a == wBookNumber b
-        equal a (Commentary b _ _ _ _ _ _ _) = a == b
+toBooks :: [Word] -> [Commentary] -> [Latin] -> [Book]
+toBooks ws cs ls = sort $ fmap mkBook wordsGroupedByBook
+  where mkBook a                              = Book (bn a) (sort $ toChapters a (cWithSameBookNumber a) (lWithSameBookNumber a))
+        cWithSameBookNumber a                 = Prelude.filter (cEqual $ bn a) cs
+        lWithSameBookNumber a                 = Prelude.filter (lEqual $ bn a) ls
+        bn a                                  = wBookNumber . Prelude.head $ a
+        wordsGroupedByBook                    = Data.List.groupBy equalBookNumbers ws
+        equalBookNumbers a b                  = wBookNumber a == wBookNumber b
+        cEqual a (Commentary b _ _ _ _ _ _ _) = a == b
+        lEqual a (Latin b _ _ _)              = a == b
 
-toChapters :: [Word] -> [Commentary] -> [Chapter]
-toChapters ws cs = fmap mkChapter wordsGroupedByChapter
-  where mkChapter a                          = Chapter (cn a) (sort $ toVerses a (Prelude.filter (equal $ cn a) cs))
-        cn a                                 = wChapterNumber . Prelude.head $ a
-        wordsGroupedByChapter                = Data.List.groupBy equalChapterNumbers ws
-        equalChapterNumbers a b              = wChapterNumber a == wChapterNumber b
-        equal a (Commentary _ c _ _ _ _ _ _) = a == c
+toChapters :: [Word] -> [Commentary] -> [Latin] -> [Chapter]
+toChapters ws cs ls = fmap mkChapter wordsGroupedByChapter
+  where mkChapter a                           = Chapter (cn a) (sort $ toVerses a (cWithSameBookNumber a) (lWithSameBookNumber a))
+        cWithSameBookNumber a                 = Prelude.filter (cEqual $ cn a) cs
+        lWithSameBookNumber a                 = Prelude.filter (lEqual $ cn a) ls
+        cn a                                  = wChapterNumber . Prelude.head $ a
+        wordsGroupedByChapter                 = Data.List.groupBy equalChapterNumbers ws
+        equalChapterNumbers a b               = wChapterNumber a == wChapterNumber b
+        cEqual a (Commentary _ c _ _ _ _ _ _) = a == c
+        lEqual a (Latin _ c _ _)              = a == c
 
-toVerses :: [Word] -> [Commentary] -> [Verse]
-toVerses ws cs = fmap mkVerse wordsGroupedByVerse
-  where mkVerse a                            = Verse (vn a) (sort a) (Prelude.filter (equal $ vn a) cs) ""
-        vn a                                 = wVerseNumber . Prelude.head $ a
-        wordsGroupedByVerse                  = Data.List.groupBy equalVerseNumbers ws
-        equalVerseNumbers a b                = wVerseNumber a == wVerseNumber b
-        equal a (Commentary _ _ v _ _ _ _ _) = a == v
+toVerses :: [Word] -> [Commentary] -> [Latin] -> [Verse]
+toVerses ws cs ls = fmap mkVerse wordsGroupedByVerse
+  where mkVerse a                             = Verse (vn a) (sort a) (cWithSameBookNumber a) (lVerseText a)
+        cWithSameBookNumber a                 = Prelude.filter (cEqual $ vn a) cs
+        lWithSameBookNumber a                 = Prelude.filter (lEqual $ vn a) ls
+        lVerseText a                          = lText . Prelude.head . lWithSameBookNumber $ a
+        vn a                                  = wVerseNumber . Prelude.head $ a
+        wordsGroupedByVerse                   = Data.List.groupBy equalVerseNumbers ws
+        equalVerseNumbers a b                 = wVerseNumber a == wVerseNumber b
+        cEqual a (Commentary _ _ v _ _ _ _ _) = a == v
+        lEqual a (Latin _ _ v _)              = a == v
