@@ -35,8 +35,7 @@ data Latin =
         } deriving (Eq, Show, Generic)
 
 data Word =
-  Word { wId             :: Int
-       , wBookNumber     :: BookNumber
+  Word { wBookNumber     :: BookNumber
        , wChapterNumber  :: ChapterNumber
        , wVerseNumber    :: VerseNumber
        , wPositionNumber :: PositionNumber
@@ -84,7 +83,7 @@ instance FromRow Latin where
   fromRow = Latin <$> field <*> field <*> field <*> field
 
 instance FromRow Word where
-  fromRow = Word <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
+  fromRow = Word <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
 
 -- Ord instances
 instance Ord Commentary where
@@ -94,7 +93,7 @@ instance Ord Latin where
   compare (Latin a b c _) (Latin d e f _) = compare (a, b, c) (d, e, f)
 
 instance Ord Word where
-  compare (Word _ ba ca va pa _ _ _ _ _ _) (Word _ bb cb vb pb _ _ _ _ _ _) = compare (ba, ca, va, pa) (bb, cb, vb, pb)
+  compare (Word ba ca va pa _ _ _ _ _ _) (Word bb cb vb pb _ _ _ _ _ _) = compare (ba, ca, va, pa) (bb, cb, vb, pb)
 
 instance Ord Verse where
   compare (Verse a _ _ _) (Verse b _ _ _) = compare a b
@@ -115,9 +114,9 @@ makeSem ''DB
 
 interpretDB :: Member (Embed IO) r => Sem (DB ': r) a -> Sem r a
 interpretDB = interpret \case
-  ReadAllBookCommentaries c bn  -> embed $ queryNamed c "SELECT * FROM commentaries WHERE book_number=:bn" [ ":bn" := bn ]
-  ReadAllBookLatinVerses  c bn  -> embed $ queryNamed c "SELECT book_number, chapter, verse, text FROM verses WHERE book_number=:bn" [ ":bn" := bn ]
-  ReadAllBookWords        c bn  -> embed $ queryNamed c "SELECT * FROM words WHERE book=:bn" [ ":bn" := bn ]
+  ReadAllBookCommentaries c bn -> embed $ queryNamed c "SELECT * FROM commentaries WHERE book=:bn" [ ":bn" := bn ]
+  ReadAllBookLatinVerses  c bn -> embed $ queryNamed c "SELECT * FROM latin_verses WHERE book=:bn" [ ":bn" := bn ]
+  ReadAllBookWords        c bn -> embed $ queryNamed c "SELECT * FROM words        WHERE book=:bn" [ ":bn" := bn ]
 
 -- structure constructor
 toVolume :: [Word] -> [Commentary] -> Volume
