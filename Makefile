@@ -5,6 +5,9 @@ VOLUME := pages/99-volume
 $(TARGET): $(PAGES) $(VOLUME).pdf
 	pdfunite $? $@
 
+pages/02-500-introduction.pdf: pages/02-500-introduction.html
+	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -o /data/$@ /data/$?
+
 $(VOLUME).pdf: $(VOLUME).html
 	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -o /data/$@ /data/$?
 

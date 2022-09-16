@@ -5,16 +5,25 @@
 @font-face { font-family: f2;      src: url(../fonts/freesans.ttf); }
 @font-face { font-family: f3;      src: url(../fonts/mono.ttf); }
 
-/* COLORS */
+/* SETTINGS */
 :root {
   --nigrica: #073642;
   --rubrica: #dc322f;
-  --didascalia: #586e75;
+  --didascalia: #485e65;
+
+  --normal-size: 1.05em;
+  --small-size: .6em;
+  --middle-size: .8em;
 }
 
 /* PAGES */
 @page {
   size: B5 portrait;
+  margin-left: 15mm;
+  margin-right: 15mm;
+  margin-top: 20mm;
+  margin-bottom: 1em;
+  counter-reset: footnote
   @footnotes {
     border-top: solid var(--nigrica) .5px;
     padding-top: 1em;
@@ -24,14 +33,14 @@
   @top-right {
     content: counter(page);
     font-family: iosevka;
-    font-size: .8em;
+    font-size: var(--middle-size);
     color: var(--didascalia);
   }
   @top-left {
     content: "J " counter(chapter);
     color: var(--didascalia);
     font-family: iosevka;
-    font-size: .8em;
+    font-size: var(--middle-size);
   }
 }
 @page:right {
@@ -39,12 +48,12 @@
     content: "J " counter(chapter);
     color: var(--didascalia);
     font-family: iosevka;
-    font-size: .8em;
+    font-size: var(--middle-size);
   }
   @top-left {
     content: counter(page);
     font-family: iosevka;
-    font-size: .8em;
+    font-size: var(--middle-size);
     color: var(--didascalia);
   }
 }
@@ -63,7 +72,7 @@
 
 /* GENERIC */
 body {
-  font-size: 1.1em;
+  font-size: var(--normal-size);
   text-align: justify;
 }
 a {
@@ -92,7 +101,7 @@ span {
 }
 p span:first-of-type:before {
   content: attr(data-chapter) "." attr(data-verse);
-  font-size: .65em;
+  font-size: var(--small-size);
   white-space: pre;
   color: var(--didascalia);
   padding: 0;
@@ -103,7 +112,7 @@ p span:first-of-type:before {
 section p:first-of-type span:first-of-type:before {
   content: attr(data-chapter);
   color: var(--nigrica);
-  font-size: 1em;
+  font-size: var(--normal-size);
 }
 span[data-strong] {
   font-family: greek, f1, f2, f3;
@@ -113,7 +122,7 @@ span[data-strong] {
 span[data-strong]:after {
   content: attr(data-translation) "\a" attr(data-strong) " " attr(data-morphology);
   white-space: pre;
-  font-size: .5em;
+  font-size: var(--small-size);
   color: var(--didascalia);
   font-family: iosevka, f1, f2, f3;
   display: block;
@@ -123,27 +132,51 @@ span[data-red=true] {
   color: var(--rubrica);
 }
 .criticism {
-  font-size: .5em;
+  font-size: var(--small-size);
   color: var(--didascalia);
   text-align: left;
   float: footnote;
   font-family: iosevka, f1, f2, f3;
+  font-style: normal;
 }
 .latin {
-  font-size: .5em;
+  font-size: var(--small-size);
   color: var(--nigrica);
   font-weight: bold;
   text-align: left;
   float: footnote;
   font-family: iosevka, f1, f2, f3;
+  font-style: normal;
+}
+.note {
+  font-size: var(--small-size);
+  color: var(--nigrica);
+  font-weight: bold;
+  text-align: left;
+  float: footnote;
+  font-family: iosevka, f1, f2, f3;
+  counter-increment: footnote;
+  font-style: normal;
 }
 *::footnote-marker {
   content: attr(data-chapter) "." attr(data-verse) " ";
   margin-right: 1em;
+}
+.note::footnote-marker {
+  content: counter(footnote);
+  line-height: none
+  color: var(--nigrica);
+  vertical-align: super;
 }
 *::footnote-call {
   content: none;
   margin: 0;
   padding: 0;
   line-height: none;
+}
+.note::footnote-call {
+  content: "[" counter(footnote) "]";
+  font-size: 83%;
+  vertical-align: super;
+  line-height: none
 }
