@@ -1,0 +1,19 @@
+/* PAGES */
+*::footnote-marker {
+  content: counter(footnote);
+}
+*::footnote-call {
+  content: counter(footnote);
+}
+
+/* GENERIC */
+article {
+  counter-reset: footnote;
+}
+p {
+  margin: var(--small-size) 0;
+}
+.note {
+  color: var(--nigrica);
+  counter-increment: footnote;
+}

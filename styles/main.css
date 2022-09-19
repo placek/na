@@ -1,0 +1,87 @@
+/* FONTS */
+@font-face { font-family: greek;   src: url(../fonts/newathu.ttf); }
+@font-face { font-family: iosevka; src: url(../fonts/iosevka.ttf); }
+@font-face { font-family: f1;      src: url(../fonts/freeserif.ttf); }
+@font-face { font-family: f2;      src: url(../fonts/freesans.ttf); }
+@font-face { font-family: f3;      src: url(../fonts/mono.ttf); }
+
+/* SETTINGS */
+:root {
+  --nigrica: #073642;
+  --rubrica: #dc322f;
+  --didascalia: #485e65;
+
+  --normal-size: 1.05em;
+  --small-size: .6em;
+  --middle-size: .8em;
+}
+
+/* PAGES */
+@page {
+  size: B5 portrait;
+  margin-left: 15mm;
+  margin-right: 15mm;
+  margin-top: 20mm;
+  margin-bottom: 1em;
+  @footnotes {
+    border-top: solid var(--nigrica) .5px;
+    padding-top: 1em;
+  }
+}
+@page:first {
+  @top-left     { content: none; }
+  @top-right    { content: none; }
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+@page:blank {
+  @top-left     { content: none; }
+  @top-right    { content: none; }
+  @bottom-left  { content: none; }
+  @bottom-right { content: none; }
+}
+*::footnote-marker {
+  margin-right: 1em;
+}
+*::footnote-call {
+  margin: 0;
+  padding: 0;
+  break-before: avoid;
+  display: inline;
+}
+
+/* GENERIC */
+body {
+  font-size: var(--normal-size);
+  color: var(--nigrica);
+}
+a {
+  text-decoration: none;
+  color: var(--nigrica);
+}
+article {
+  page-break-before: always;
+}
+section {
+  prince-footnote-policy: keep-with-block;
+}
+p {
+  text-align: justify;
+  margin: var(--small-size) 0;
+}
+span {
+  display: inline-block;
+  word-break: keep-all;
+  box-sizing: border-box;
+  break-inside: avoid;
+}
+
+/* ELEMENTS */
+.footnote {
+  display: inline-block;
+  font-size: var(--small-size);
+  text-align: left;
+  float: footnote;
+  font-family: iosevka, f1, f2, f3;
+  font-style: normal;
+}

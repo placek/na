@@ -1,5 +1,5 @@
 TARGET := result.pdf
-PAGES  := $(wildcard pages/*.pdf)
+PAGES  := pages/00-title.pdf pages/01-title.pdf pages/02-500-introduction.pdf pages/99-volume.pdf
 VOLUME := pages/99-volume
 
 $(TARGET): $(PAGES) $(VOLUME).pdf
@@ -28,4 +28,4 @@ edit: $(TARGET)
 
 .PHONY: clean
 clean:
-	rm -rf $(VOLUME).html $(VOLUME).pdf $(TARGET)
+	rm -rf $(VOLUME).html $(VOLUME).pdf pages/02-500-introduction.pdf $(TARGET)
