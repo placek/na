@@ -1,15 +1,13 @@
 TARGET := result.pdf
-PAGES  := pages/00-title.pdf pages/01-title.pdf pages/02-500-introduction.pdf pages/99-volume.pdf
+INFO   := pages/02-koine.pdf pages/03-500.pdf
 VOLUME := pages/99-volume
+PAGES  := pages/00-title.pdf pages/01-title.pdf $(INFO) $(VOLUME).pdf
 
-$(TARGET): $(PAGES) $(VOLUME).pdf
+$(TARGET): $(PAGES)
 	pdfunite $? $@
 
-pages/02-500-introduction.pdf: pages/02-500-introduction.html
-	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -o /data/$@ /data/$?
-
-$(VOLUME).pdf: $(VOLUME).html
-	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -o /data/$@ /data/$?
+pages/%.pdf: pages/%.html
+	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -o /data/$@ /data/$<
 
 $(VOLUME).html: build
 	cabal run > $@
@@ -28,4 +26,4 @@ edit: $(TARGET)
 
 .PHONY: clean
 clean:
-	rm -rf $(VOLUME).html $(VOLUME).pdf pages/02-500-introduction.pdf $(TARGET)
+	rm -rf $(VOLUME).html $(VOLUME).pdf $(INFO) $(TARGET)

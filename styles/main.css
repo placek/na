@@ -1,6 +1,7 @@
 /* FONTS */
 @font-face { font-family: greek;   src: url(../fonts/newathu.ttf); }
 @font-face { font-family: iosevka; src: url(../fonts/iosevka.ttf); }
+@font-face { font-family: cardo;   src: url(../fonts/cardo.ttf); }
 @font-face { font-family: f1;      src: url(../fonts/freeserif.ttf); }
 @font-face { font-family: f2;      src: url(../fonts/freesans.ttf); }
 @font-face { font-family: f3;      src: url(../fonts/mono.ttf); }
@@ -19,10 +20,6 @@
 /* PAGES */
 @page {
   size: B5 portrait;
-  margin-left: 15mm;
-  margin-right: 15mm;
-  margin-top: 20mm;
-  margin-bottom: 1em;
   @footnotes {
     border-top: solid var(--nigrica) .5px;
     padding-top: 1em;
@@ -45,15 +42,17 @@
 }
 *::footnote-call {
   margin: 0;
-  padding: 0;
-  break-before: avoid;
-  display: inline;
+  padding: 0 .2em;
+  vertical-align: super;
 }
 
 /* GENERIC */
 body {
   font-size: var(--normal-size);
   color: var(--nigrica);
+}
+h1, h2, h3, h4, h5, h6 {
+  -prince-line-break-choices: heading;
 }
 a {
   text-decoration: none;
@@ -67,7 +66,6 @@ section {
 }
 p {
   text-align: justify;
-  margin: var(--small-size) 0;
 }
 span {
   display: inline-block;

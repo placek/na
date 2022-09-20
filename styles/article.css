@@ -1,4 +1,20 @@
 /* PAGES */
+@page:left {
+  @top-right {
+    content: counter(page, upper-roman);
+    font-family: iosevka;
+    font-size: var(--middle-size);
+    color: var(--didascalia);
+  }
+}
+@page:right {
+  @top-left {
+    content: counter(page, upper-roman);
+    font-family: iosevka;
+    font-size: var(--middle-size);
+    color: var(--didascalia);
+  }
+}
 *::footnote-marker {
   content: counter(footnote);
 }
@@ -9,9 +25,16 @@
 /* GENERIC */
 article {
   counter-reset: footnote;
+  font-family: cardo, f1, f2, f3;
 }
 p {
   margin: var(--small-size) 0;
+  text-indent: 2em;
+  display: block;
+}
+ul, ol {
+  margin: 0;
+  padding-left: 2em;
 }
 .note {
   color: var(--nigrica);
