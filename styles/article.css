@@ -14,6 +14,12 @@
     font-size: var(--middle-size);
     color: var(--didascalia);
   }
+  @top-right {
+    content: string(chapter-title);
+    font-family: iosevka;
+    font-size: var(--middle-size);
+    color: var(--nigrica);
+  }
 }
 *::footnote-marker {
   content: counter(footnote);
@@ -26,6 +32,40 @@
 article {
   counter-reset: footnote;
   font-family: cardo, f1, f2, f3;
+  counter-reset: h2;
+  page-break-after: left;
+}
+h2 {
+  string-set: chapter-title content();
+}
+h2::before, h3::before, h4::before, h5::before, h6::before {
+  font-family: iosevka;
+  color: var(--didascalia);
+  font-size: var(--middle-size);
+}
+h2::before {
+  counter-increment: h2;
+  content: counter(h2) ". ";
+}
+h2 { counter-reset: h3; }
+h3::before {
+  counter-increment: h3;
+  content: counter(h2) "." counter(h3) ". ";
+}
+h3 { counter-reset: h4; }
+h4::before {
+  counter-increment: h4;
+  content: counter(h2) "." counter(h3) "." counter(h4) ". ";
+}
+h4 { counter-reset: h5; }
+h5::before {
+  counter-increment: h5;
+  content: counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) ". ";
+}
+h5 { counter-reset: h6; }
+h6::before {
+  counter-increment: h6;
+  content: counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) "." counter(h6) ". ";
 }
 p {
   margin: var(--small-size) 0;

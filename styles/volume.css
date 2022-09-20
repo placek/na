@@ -1,26 +1,26 @@
 /* PAGES */
 @page:left {
-  @top-right {
+  @top-left {
     content: counter(page);
     font-family: iosevka;
     font-size: var(--middle-size);
     color: var(--didascalia);
   }
-  @top-left {
-    content: "J " counter(chapter);
+  @top-right {
+    content: string(volume-title) " " counter(chapter);
     color: var(--didascalia);
     font-family: iosevka;
     font-size: var(--middle-size);
   }
 }
 @page:right {
-  @top-right {
-    content: "J " counter(chapter);
+  @top-left {
+    content: string(volume-title) " " counter(chapter);
     color: var(--didascalia);
     font-family: iosevka;
     font-size: var(--middle-size);
   }
-  @top-left {
+  @top-right {
     content: counter(page);
     font-family: iosevka;
     font-size: var(--middle-size);
@@ -36,6 +36,7 @@
 
 /* GENERIC */
 article {
+  string-set: volume-title attr(data-volume);
   counter-reset: chapter;
   text-align: justify;
 }

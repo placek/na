@@ -1,7 +1,7 @@
 TARGET := result.pdf
 INFO   := pages/02-koine.pdf pages/03-500.pdf
 VOLUME := pages/99-volume
-PAGES  := pages/00-title.pdf pages/01-title.pdf $(INFO) $(VOLUME).pdf
+PAGES  := pages/00-title.pdf pages/01-title.pdf pages/blank.pdf $(INFO) $(VOLUME).pdf
 
 $(TARGET): $(PAGES)
 	pdfunite $? $@
