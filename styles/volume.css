@@ -64,7 +64,7 @@ section p:first-of-type span:first-of-type:before {
 }
 span[data-strong] {
   font-family: greek, f1, f2, f3;
-  padding: .2em;
+  padding: .2em 0;
   text-align: center;
 }
 span[data-strong]:after {
