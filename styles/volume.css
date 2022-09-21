@@ -68,7 +68,7 @@ span[data-strong] {
   text-align: center;
 }
 span[data-strong]:after {
-  content: attr(data-translation) "\a" attr(data-strong) " " attr(data-morphology);
+  content: attr(data-translation) "\a" attr(data-strong) "\a" attr(data-morphology);
   white-space: pre;
   font-size: var(--small-size);
   color: var(--didascalia);
