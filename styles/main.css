@@ -56,7 +56,8 @@ a {
   color: var(--nigrica);
 }
 article {
-  page-break-before: always;
+  break-before: recto;
+  break-after: verso;
 }
 section {
   prince-footnote-policy: keep-with-block;

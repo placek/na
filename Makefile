@@ -2,7 +2,7 @@
 
 target   := result.pdf
 articles := static/00-header.html static/01-koine.html static/02-format.html static/03-j.html static/99-footer.html
-pages    := pages/00-title.pdf pages/01-info.pdf pages/02-blank.pdf pages/03-articles.pdf pages/99-volume.pdf
+pages    := pages/00-title.pdf pages/01-info.pdf pages/03-articles.pdf pages/99-volume.pdf
 
 $(target): $(pages)
 	pdfunite $? $@

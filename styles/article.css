@@ -33,7 +33,6 @@ article {
   counter-reset: footnote;
   font-family: cardo, f1, f2, f3;
   counter-reset: h2;
-  page-break-after: left;
   font-size: 90%;
 }
 h2 {
