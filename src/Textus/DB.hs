@@ -32,6 +32,7 @@ data Latin =
         , lChapterNumber :: ChapterNumber
         , lVerseNumber   :: VerseNumber
         , lText          :: Text
+        , lEusebeios     :: Int
         } deriving (Eq, Show, Generic)
 
 data Word =
@@ -53,6 +54,7 @@ data Verse =
         , words       :: [Textus.DB.Word]
         , comments    :: [Textus.DB.Commentary]
         , latin       :: Text
+        , eusebeios   :: Int
         } deriving (Eq, Show, Generic)
 
 data Chapter =
@@ -80,7 +82,7 @@ instance FromRow Commentary where
   fromRow = Commentary <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
 
 instance FromRow Latin where
-  fromRow = Latin <$> field <*> field <*> field <*> field
+  fromRow = Latin <$> field <*> field <*> field <*> field <*> field
 
 instance FromRow Word where
   fromRow = Word <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
@@ -90,13 +92,13 @@ instance Ord Commentary where
   compare (Commentary a b c _ _ _ _ _) (Commentary d e f _ _ _ _ _) = compare (a, b, c) (d, e, f)
 
 instance Ord Latin where
-  compare (Latin a b c _) (Latin d e f _) = compare (a, b, c) (d, e, f)
+  compare (Latin a b c _ _) (Latin d e f _ _) = compare (a, b, c) (d, e, f)
 
 instance Ord Word where
   compare (Word ba ca va pa _ _ _ _ _ _) (Word bb cb vb pb _ _ _ _ _ _) = compare (ba, ca, va, pa) (bb, cb, vb, pb)
 
 instance Ord Verse where
-  compare (Verse a _ _ _) (Verse b _ _ _) = compare a b
+  compare (Verse a _ _ _ _) (Verse b _ _ _ _) = compare a b
 
 instance Ord Chapter where
   compare (Chapter a _) (Chapter b _) = compare a b
@@ -131,7 +133,7 @@ toBooks ws cs ls = sort $ fmap mkBook wordsGroupedByBook
         wordsGroupedByBook                    = Data.List.groupBy equalBookNumbers ws
         equalBookNumbers a b                  = wBookNumber a == wBookNumber b
         cEqual a (Commentary b _ _ _ _ _ _ _) = a == b
-        lEqual a (Latin b _ _ _)              = a == b
+        lEqual a (Latin b _ _ _ _)            = a == b
 
 toChapters :: [Word] -> [Commentary] -> [Latin] -> [Chapter]
 toChapters ws cs ls = fmap mkChapter wordsGroupedByChapter
@@ -142,16 +144,17 @@ toChapters ws cs ls = fmap mkChapter wordsGroupedByChapter
         wordsGroupedByChapter                 = Data.List.groupBy equalChapterNumbers ws
         equalChapterNumbers a b               = wChapterNumber a == wChapterNumber b
         cEqual a (Commentary _ c _ _ _ _ _ _) = a == c
-        lEqual a (Latin _ c _ _)              = a == c
+        lEqual a (Latin _ c _ _ _)            = a == c
 
 toVerses :: [Word] -> [Commentary] -> [Latin] -> [Verse]
 toVerses ws cs ls = fmap mkVerse wordsGroupedByVerse
-  where mkVerse a                             = Verse (vn a) (sort a) (cWithSameBookNumber a) (lVerseText a)
+  where mkVerse a                             = Verse (vn a) (sort a) (cWithSameBookNumber a) (lVerseText a) (lVerseEusebeios a)
         cWithSameBookNumber a                 = Prelude.filter (cEqual $ vn a) cs
         lWithSameBookNumber a                 = Prelude.filter (lEqual $ vn a) ls
         lVerseText a                          = lText . Prelude.head . lWithSameBookNumber $ a
+        lVerseEusebeios a                     = lEusebeios . Prelude.minimum . lWithSameBookNumber $ a
         vn a                                  = wVerseNumber . Prelude.head $ a
         wordsGroupedByVerse                   = Data.List.groupBy equalVerseNumbers ws
         equalVerseNumbers a b                 = wVerseNumber a == wVerseNumber b
         cEqual a (Commentary _ _ v _ _ _ _ _) = a == v
-        lEqual a (Latin _ _ v _)              = a == v
+        lEqual a (Latin _ _ v _ _)            = a == v

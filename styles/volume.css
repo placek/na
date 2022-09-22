@@ -79,6 +79,18 @@ span[data-strong]:after {
 span[data-red=true] {
   color: var(--rubrica);
 }
+p[data-eusebeios]:before {
+  content: attr(data-eusebeios);
+  padding-top: var(--small-size);
+  font-size: var(--small-size);
+  color: var(--nigrica);
+  font-family: greek, f1, f2, f3;
+  -prince-float: outside;
+  -prince-margin-outside: -3.5em;
+}
+p[data-eusebeios="0"]:before {
+  content: none;
+}
 
 /* ELEMENTS */
 .criticism {

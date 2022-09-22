@@ -8,7 +8,7 @@ $(target): $(pages)
 	pdfunite $? $@
 
 pages/%.pdf: pages/%.html
-	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -o /data/$@ /data/$<
+	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -j -o /data/$@ /data/$<
 
 pages/03-articles.html: $(articles)
 	cat $? > $@
