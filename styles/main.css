@@ -38,7 +38,8 @@
   @bottom-right { content: none; }
 }
 *::footnote-marker {
-  margin-right: 1em;
+  margin-right: var(--small-size);
+  padding: 0;
 }
 *::footnote-call {
   margin: 0;
@@ -74,7 +75,6 @@ span {
 
 /* ELEMENTS */
 .footnote {
-  display: inline-block;
   font-size: var(--small-size);
   text-align: left;
   float: footnote;
