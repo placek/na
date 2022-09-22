@@ -34,6 +34,7 @@ article {
   font-family: cardo, f1, f2, f3;
   counter-reset: h2;
   page-break-after: left;
+  font-size: 90%;
 }
 h2 {
   string-set: chapter-title content();
@@ -79,4 +80,32 @@ ul, ol {
 .note {
   color: var(--nigrica);
   counter-increment: footnote;
+}
+table {
+  width: 100%;
+  margin-bottom: 1em;
+}
+thead th, thead td {
+  font-family: cardo;
+  text-align: center;
+  font-size: .8em;
+  padding: 0 .2em;
+}
+td {
+  text-align: center;
+  border: 1px dotted black;
+}
+code {
+  font-family: iosevka !important;
+  display: block;
+}
+dt:before {
+  content: "";
+  display: block;
+}
+dt {
+  font-family: iosevka;
+}
+dt, dd {
+  display: inline;
 }
