@@ -21,16 +21,9 @@
     color: var(--nigrica);
   }
 }
-*::footnote-marker {
-  content: counter(footnote);
-}
-*::footnote-call {
-  content: counter(footnote);
-}
 
 /* GENERIC */
 article {
-  counter-reset: footnote;
   font-family: cardo, f1, f2, f3;
   counter-reset: h2;
   font-size: 90%;
@@ -76,10 +69,6 @@ ul, ol {
   margin: 0;
   padding-left: 2em;
 }
-.note {
-  color: var(--nigrica);
-  counter-increment: footnote;
-}
 table {
   width: 100%;
   margin-bottom: 1em;
@@ -98,13 +87,13 @@ code {
   font-family: iosevka !important;
   display: block;
 }
-dt:before {
+dl.dict dt:before {
   content: "";
   display: block;
 }
-dt {
+dl.dict dt {
   font-family: iosevka;
 }
-dt, dd {
+dl.dict dt, dl.dict dd {
   display: inline;
 }

@@ -45,12 +45,21 @@
   margin: 0;
   padding: 0 .2em;
   vertical-align: super;
+  display: inline-block;
 }
 
 /* GENERIC */
 body {
   font-size: var(--normal-size);
   color: var(--nigrica);
+}
+header {
+  font-size: 4em;
+  text-align: center;
+  font-family: greek;
+  font-weight: bold;
+  margin-top: 5cm;
+  break-after: page;
 }
 a {
   text-decoration: none;
@@ -78,6 +87,7 @@ span {
   font-size: var(--small-size);
   text-align: left;
   float: footnote;
-  font-family: iosevka, f1, f2, f3;
+  font-family: cardo;
   font-style: normal;
+  display: inline-block;
 }

@@ -104,4 +104,5 @@ p[data-eusebeios="0"]:before {
   color: var(--nigrica);
   font-weight: bold;
   counter-increment: footnote;
+  box-sizing: border-box;
 }

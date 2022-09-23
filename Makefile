@@ -1,19 +1,19 @@
 .PHONY: clean edit
 
-target   := result.pdf
-articles := static/00-header.html static/01-koine.html static/02-format.html static/03-j.html static/99-footer.html
-pages    := pages/00-title.pdf pages/01-info.pdf pages/03-articles.pdf pages/99-volume.pdf
+target := result.pdf
+intro  := static/00-header.html static/01-titlepage.html static/02-format.html static/03-koine.html static/04-j.html static/99-footer.html
+pages  := 01-intro.pdf 99-volume.pdf
 
 $(target): $(pages)
 	pdfunite $? $@
 
-pages/%.pdf: pages/%.html
+%.pdf: %.html
 	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -j -o /data/$@ /data/$<
 
-pages/03-articles.html: $(articles)
+01-intro.html: $(intro)
 	cat $? > $@
 
-pages/99-volume.html: build
+99-volume.html: build
 	cabal run > $@
 	@echo "FIXME: removing html entities with actual chars"
 	sed -i '1,4d'         $@
@@ -29,4 +29,4 @@ edit: $(target)
 	okular $?
 
 clean:
-	rm -rf pages/99-volume.html pages/99-volume.pdf pages/03-articles.html pages/03-articles.pdf $(target)
+	rm -rf 99-volume.html 99-volume.pdf 01-intro.html 01-intro.pdf $(target)
