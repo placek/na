@@ -1,19 +1,6 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="./styles/normalize.css">
-  <link rel="stylesheet" href="./styles/main.css">
-  <link rel="stylesheet" href="./styles/volume.css">
-  <style>
-  </style>
-</head>
-
-<body>
 {{# books }}
 {{> book }}
 {{/ books }}
-</body>
 <script>
 function convertToGreek(num) {
   var greek = { "ϡ" : 900, "ω" : 800, "ψ" : 700, "χ" : 600, "φ" : 500, "υ" : 400, "τ" : 300, "σ" : 200, "ρ" : 100, "ϟ" : 90, "π" : 80, "ο" : 70, "ξ" : 60, "ν" : 50, "μ" : 40, "λ" : 30, "κ" : 20, "ι" : 10, "θ" : 9, "η" : 8, "ζ" : 7, "ϛ" : 6, "ε" : 5, "δ" : 4, "γ" : 3, "β" : 2, "α" : 1 };
@@ -29,4 +16,3 @@ function convertToGreek(num) {
 var elements = document.querySelectorAll("p[data-eusebeios]");
 for(var i = 0; i < elements.length - 1; i++) { elements[i].setAttribute("data-eusebeios", convertToGreek(elements[i].getAttribute("data-eusebeios"))); }
 </script>
-</html>

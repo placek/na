@@ -1,9 +1,1 @@
-<p data-eusebeios="{{ eusebeios }}">
-{{# words }}
-{{> word }}
-{{/ words }}
-<div class="footnote latin" data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">{{ latin }}</div>
-{{# comments }}
-<div class="footnote criticism" data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">{{ cText }}</div>
-{{/ comments }}
-</p>
+<p class="verse" data-eusebeios="{{ eusebeios }}">{{# words }}{{> word }}{{/ words }}<span class="footnote latin" data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">{{ latin }}</span>{{# comments }}<span class="footnote criticism" data-chapter="{{ chapterNumber }}" data-verse="{{ verseNumber }}">{{ cText }}</span>{{/ comments }}</p>

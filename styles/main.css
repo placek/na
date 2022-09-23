@@ -1,65 +1,61 @@
-/* FONTS */
+/* GENERIC */
+@font-face { font-family: cardo;   src: url(../fonts/cardo.ttf); }
 @font-face { font-family: greek;   src: url(../fonts/newathu.ttf); }
 @font-face { font-family: iosevka; src: url(../fonts/iosevka.ttf); }
-@font-face { font-family: cardo;   src: url(../fonts/cardo.ttf); }
 @font-face { font-family: f1;      src: url(../fonts/freeserif.ttf); }
 @font-face { font-family: f2;      src: url(../fonts/freesans.ttf); }
 @font-face { font-family: f3;      src: url(../fonts/mono.ttf); }
 
-/* SETTINGS */
 :root {
   --nigrica: #073642;
   --rubrica: #dc322f;
   --didascalia: #485e65;
 
-  --normal-size: 1.05em;
+  --normal-size: 1em;
   --small-size: .6em;
-  --middle-size: .8em;
+  --medium-size: .8em;
 }
-
-/* PAGES */
 @page {
   size: B5 portrait;
   @footnotes {
     border-top: solid var(--nigrica) .5px;
     padding-top: 1em;
+    margin-top: 1em;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+  @top-left {
+    font-family: iosevka;
+    font-size: var(--medium-size);
+    color: var(--didascalia);
+  }
+  @top-right {
+    font-family: iosevka;
+    font-size: var(--medium-size);
+    color: var(--didascalia);
   }
 }
 @page:first {
-  @top-left     { content: none; }
-  @top-right    { content: none; }
-  @bottom-left  { content: none; }
-  @bottom-right { content: none; }
+  @top-left  { display: none; }
+  @top-right { display: none; }
 }
 @page:blank {
-  @top-left     { content: none; }
-  @top-right    { content: none; }
-  @bottom-left  { content: none; }
-  @bottom-right { content: none; }
+  @top-left  { display: none; }
+  @top-right { display: none; }
+}
+*::footnote-call {
+  content: none;
+  line-height: none;
+  display: inline !important;
 }
 *::footnote-marker {
   margin-right: var(--small-size);
-  padding: 0;
-}
-*::footnote-call {
-  margin: 0;
-  padding: 0 .2em;
-  vertical-align: super;
-  display: inline-block;
 }
 
-/* GENERIC */
 body {
   font-size: var(--normal-size);
   color: var(--nigrica);
-}
-header {
-  font-size: 4em;
-  text-align: center;
-  font-family: greek;
-  font-weight: bold;
-  margin-top: 5cm;
-  break-after: page;
+  font-family: cardo;
 }
 a {
   text-decoration: none;
@@ -68,26 +64,205 @@ a {
 article {
   break-before: recto;
   break-after: verso;
-}
-section {
-  prince-footnote-policy: keep-with-block;
+  counter-reset: h2;
 }
 p {
+  margin: 0;
+  padding: 0;
+}
+h2::before, h3::before, h4::before, h5::before, h6::before {
+  font-family: iosevka;
+  color: var(--didascalia);
+  font-size: var(--medium-size);
+}
+h2::before {
+  counter-increment: h2;
+  content: counter(h2) ". ";
+}
+h2 { counter-reset: h3; }
+h3::before {
+  counter-increment: h3;
+  content: counter(h2) "." counter(h3) ". ";
+}
+h3 { counter-reset: h4; }
+h4::before {
+  counter-increment: h4;
+  content: counter(h2) "." counter(h3) "." counter(h4) ". ";
+}
+h4 { counter-reset: h5; }
+h5::before {
+  counter-increment: h5;
+  content: counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) ". ";
+}
+h5 { counter-reset: h6; }
+h6::before {
+  counter-increment: h6;
+  content: counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) "." counter(h6) ". ";
+}
+ul, ol {
+  margin: 0;
+  padding-left: 2em;
+}
+table {
+  width: 100%;
+  margin-bottom: 1em;
+}
+thead th, thead td {
+  text-align: center;
+  font-size: .8em;
+  padding: 0 .2em;
+}
+td {
+  text-align: center;
+  border: 1px dotted black;
+}
+code {
+  font-family: iosevka !important;
+  display: block;
+}
+.footnote {
+  font-size: var(--medium-size);
+  text-align: left;
+  float: footnote;
+  font-style: normal;
+  display: inline-block;
+}
+
+/* TITLE */
+.title header {
+  font-size: 4em;
+  text-align: center;
+  font-family: greek;
+  font-weight: bold;
+  margin-top: 5cm;
+  break-after: page;
+}
+
+.title dl {
+  counter-reset: page 0;
+}
+
+/* ARTICLES */
+@page article:left {
+  @top-left {
+    content: string(chapter-title);
+  }
+}
+@page article:right {
+  @top-right {
+    content: counter(page, upper-roman);
+  }
+}
+.article {
+  page: article;
+}
+.article p {
+  margin: var(--small-size) 0;
+  text-indent: 1em;
   text-align: justify;
 }
-span {
+.article dl dt:before {
+  content: "";
+  display: block;
+}
+.article dl dt {
+  font-family: iosevka;
+}
+.article dl dt, .article dl dd {
+  display: inline;
+}
+.article h1 {
+  string-set: chapter-title content();
+}
+
+/* BOOK */
+@page book {
+  margin-bottom: 1em;
+}
+@page book:left {
+  @top-left {
+    content: string(book-title) " " counter(chapter);
+  }
+}
+@page book:right {
+  @top-right {
+    content: counter(page);
+  }
+}
+.criticism {
+  color: var(--didascalia);
+}
+.latin {
+  color: var(--nigrica);
+  font-weight: bold;
+}
+.book {
+  counter-reset: chapter;
+  string-set: book-title attr(data-book);
+  text-align: justify;
+  page: book;
+  counter-reset: page 1;
+}
+.chapter {
+  display: inline;
+  counter-increment: chapter;
+}
+.verse {
+  display: inline;
+}
+.word {
   display: inline-block;
   word-break: keep-all;
   box-sizing: border-box;
   break-inside: avoid;
 }
-
-/* ELEMENTS */
-.footnote {
+.verse[data-eusebeios]:before {
+  content: attr(data-eusebeios);
+  padding-top: var(--small-size);
   font-size: var(--small-size);
-  text-align: left;
-  float: footnote;
-  font-family: cardo;
-  font-style: normal;
-  display: inline-block;
+  color: var(--nigrica);
+  font-family: greek, f1, f2, f3;
+  -prince-float: outside;
+  -prince-margin-outside: -3.5em;
+}
+.verse[data-eusebeios="0"]:before {
+  content: none;
+}
+.verse .word:first-of-type:before {
+  content: attr(data-chapter) "." attr(data-verse);
+  font-size: var(--small-size);
+  white-space: pre;
+  color: var(--didascalia);
+  padding: 0;
+  font-family: iosevka;
+  font-weight: bold;
+  margin-right: .5em;
+}
+.chapter .verse:first-of-type .word:first-of-type:before {
+  content: attr(data-chapter);
+  color: var(--nigrica);
+  font-size: var(--normal-size);
+}
+.word[data-strong] {
+  font-family: greek, f1, f2, f3;
+  padding: .2em 0;
+  text-align: center;
+}
+.word[data-strong]:after {
+  content: attr(data-translation) "\a" attr(data-strong) "\a" attr(data-morphology);
+  white-space: pre;
+  font-size: var(--small-size);
+  color: var(--didascalia);
+  font-family: iosevka;
+  display: block;
+  text-align: center;
+}
+.word[data-red=true] {
+  color: var(--rubrica);
+}
+.latin::footnote-marker {
+  content: attr(data-chapter) "." attr(data-verse);
+}
+.criticism::footnote-marker {
+  content: attr(data-chapter) "." attr(data-verse);
 }
