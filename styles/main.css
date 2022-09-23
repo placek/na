@@ -39,10 +39,6 @@
   @top-left  { display: none; }
   @top-right { display: none; }
 }
-@page:blank {
-  @top-left  { display: none; }
-  @top-right { display: none; }
-}
 *::footnote-call {
   content: none;
   line-height: none;
@@ -138,6 +134,12 @@ code {
   break-after: page;
 }
 
+.title object {
+  width: 100%;
+  height: 20%;
+  -prince-float-placement: bottom;
+  -prince-float-reference: page;
+}
 .title dl {
   counter-reset: page 0;
 }
@@ -145,13 +147,20 @@ code {
 /* ARTICLES */
 @page article:left {
   @top-left {
-    content: string(chapter-title);
+    content: counter(page, upper-roman);
   }
 }
 @page article:right {
+  @top-left {
+    content: string(chapter-title);
+  }
   @top-right {
     content: counter(page, upper-roman);
   }
+}
+@page article:blank {
+  @top-left  { display: none; }
+  @top-right { display: none; }
 }
 .article {
   page: article;
@@ -181,10 +190,16 @@ code {
 }
 @page book:left {
   @top-left {
+    content: counter(page);
+  }
+  @top-right {
     content: string(book-title) " " counter(chapter);
   }
 }
 @page book:right {
+  @top-left {
+    content: string(book-title) " " counter(chapter);
+  }
   @top-right {
     content: counter(page);
   }
