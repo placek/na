@@ -128,7 +128,7 @@ code {
   break-after: page;
 }
 
-.title object {
+.logo {
   width: 100%;
   height: 20%;
   -prince-float-placement: bottom;
@@ -168,7 +168,7 @@ code {
   content: "";
   display: block;
 }
-.article dl dt {
+.article dl.dict dt {
   font-family: iosevka;
 }
 .article dl dt, .article dl dd {
@@ -180,9 +180,14 @@ code {
 
 /* EXAMPLE */
 .example {
-  border: 1px solid var(--didascalia);
+  border: .5px solid var(--nigrica);
   font-size: 80%;
   padding: 2em;
+  box-shadow: 3px 3px 3px var(--didascalia);
+  position: relative;
+}
+.example * {
+  z-index: -1 !important;
 }
 .example .page {
   text-align: justify;
@@ -224,6 +229,26 @@ code {
   font-family: iosevka;
   float: left;
   margin-left: -2.5em;
+}
+.example .mark {
+  font-family: iosevka;
+  font-size: 1em;
+  font-weight: bold;
+  color: var(--rubrica);
+  width: 1.4em;
+  height: 1.4em;
+  border: .5px solid var(--rubrica);
+  border-radius: .7em;
+  display: inline-block;
+  text-align: center;
+  z-index: 999 !important;
+  position: absolute;
+  background: white;
+}
+.example .mark:after {
+  content: " |";
+  background: white;
+  font-weight: normal;
 }
 
 /* BOOK */
