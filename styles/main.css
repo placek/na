@@ -46,6 +46,8 @@
 }
 *::footnote-marker {
   margin-right: var(--small-size);
+  font-family: iosevka;
+  font-size: var(--medium-size);
 }
 
 body {
@@ -351,6 +353,11 @@ code {
   font-family: iosevka;
   display: block;
   text-align: center;
+}
+.word[data-strong]:after::first-line {
+  font-family: cardo;
+  font-size: 130%;
+  color: var(--didascalia);
 }
 .word[data-red=true] {
   color: var(--rubrica);
