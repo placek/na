@@ -218,6 +218,12 @@ code {
   page: book;
   counter-reset: page 1;
 }
+.book .verse:first-of-type .word:first-of-type:before {
+  display: none;
+}
+.book .verse:first-of-type .word:first-of-type::first-letter {
+  font-size: 2.2em;
+}
 .chapter {
   display: inline;
   counter-increment: chapter;
