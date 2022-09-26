@@ -154,7 +154,7 @@ code {
   @top-left {
     content: string(chapter-title);
   }
-  @top-right {
+  @top-right{
     content: counter(page, upper-roman);
   }
 }
@@ -267,7 +267,7 @@ code {
   content: attr(data-translation) "\a" attr(data-strong) "\a" attr(data-morphology);
   white-space: pre;
   font-size: var(--small-size);
-  color: var(--didascalia);
+  color: var(--nigrica);
   font-family: iosevka;
   display: block;
   text-align: center;
