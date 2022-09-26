@@ -102,6 +102,7 @@ ul, ol {
 table {
   width: 100%;
   margin-bottom: 1em;
+  font-size: 80%;
 }
 thead th, thead td {
   text-align: center;
@@ -115,13 +116,6 @@ td {
 code {
   font-family: iosevka !important;
   display: block;
-}
-.footnote {
-  font-size: var(--medium-size);
-  text-align: left;
-  float: footnote;
-  font-style: normal;
-  display: inline-block;
 }
 
 /* TITLE */
@@ -184,6 +178,54 @@ code {
   string-set: chapter-title content();
 }
 
+/* EXAMPLE */
+.example {
+  border: 1px solid var(--didascalia);
+  font-size: 80%;
+  padding: 2em;
+}
+.example .page {
+  text-align: justify;
+}
+.example .notes {
+  border-top: solid var(--nigrica) .5px;
+  padding-top: 1em;
+  margin-top: 1em;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.example .page .verse:first-of-type .word:first-of-type:before {
+  content: attr(data-chapter);
+  color: var(--nigrica);
+  font-size: var(--normal-size);
+}
+.example .page .verse[data-eusebeios]:before {
+  content: attr(data-eusebeios);
+  font-size: var(--small-size);
+  color: var(--nigrica);
+  font-family: greek, f1, f2, f3;
+  float: left;
+  padding-top: var(--small-size);
+  margin-left: -2.5em;
+}
+.example .page .verse[data-eusebeios="0"]:before {
+  content: none;
+}
+.example .notes .footnote {
+  font-size: var(--medium-size);
+  text-align: left;
+  font-style: normal;
+  display: block;
+}
+.example .notes .footnote:before {
+  content: attr(data-chapter) "." attr(data-verse);
+  font-size: var(--medium-size);
+  text-align: right;
+  font-family: iosevka;
+  float: left;
+  margin-left: -2.5em;
+}
+
 /* BOOK */
 @page book {
   margin-bottom: 1em;
@@ -218,10 +260,17 @@ code {
   page: book;
   counter-reset: page 1;
 }
-.book .verse:first-of-type .word:first-of-type:before {
+.book .footnote {
+  font-size: var(--medium-size);
+  text-align: left;
+  float: footnote;
+  font-style: normal;
+  display: inline-block;
+}
+.book .chapter:first-of-type .verse:first-of-type .word:first-of-type:before {
   display: none;
 }
-.book .verse:first-of-type .word:first-of-type::first-letter {
+.book .chapter:first-of-type .verse:first-of-type .word:first-of-type::first-letter {
   font-size: 2.2em;
 }
 .chapter {
@@ -237,7 +286,7 @@ code {
   box-sizing: border-box;
   break-inside: avoid;
 }
-.verse[data-eusebeios]:before {
+.book .verse[data-eusebeios]:before {
   content: attr(data-eusebeios);
   padding-top: var(--small-size);
   font-size: var(--small-size);
@@ -246,7 +295,7 @@ code {
   -prince-float: outside;
   -prince-margin-outside: -3.5em;
 }
-.verse[data-eusebeios="0"]:before {
+.book .verse[data-eusebeios="0"]:before {
   content: none;
 }
 .verse .word:first-of-type:before {

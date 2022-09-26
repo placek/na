@@ -2,8 +2,9 @@
 {{> book }}
 {{/ books }}
 <script>
+/* Convert Eusebeios numbers to greek numerals. */
 function convertToGreek(num) {
-  var greek = { "ϡ" : 900, "ω" : 800, "ψ" : 700, "χ" : 600, "φ" : 500, "υ" : 400, "τ" : 300, "σ" : 200, "ρ" : 100, "ϟ" : 90, "π" : 80, "ο" : 70, "ξ" : 60, "ν" : 50, "μ" : 40, "λ" : 30, "κ" : 20, "ι" : 10, "θ" : 9, "η" : 8, "ζ" : 7, "ϛ" : 6, "ε" : 5, "δ" : 4, "γ" : 3, "β" : 2, "α" : 1 };
+  var greek = { 'ϡ' : 900, 'ω' : 800, 'ψ' : 700, 'χ' : 600, 'φ' : 500, 'υ' : 400, 'τ' : 300, 'σ' : 200, 'ρ' : 100, 'ϟ' : 90, 'π' : 80, 'ο' : 70, 'ξ' : 60, 'ν' : 50, 'μ' : 40, 'λ' : 30, 'κ' : 20, 'ι' : 10, 'θ' : 9, 'η' : 8, 'ζ' : 7, 'ϛ' : 6, 'ε' : 5, 'δ' : 4, 'γ' : 3, 'β' : 2, 'α' : 1 };
   var str = '';
   for(var k in greek) {
     var v = greek[k];
@@ -13,6 +14,17 @@ function convertToGreek(num) {
   }
   return str;
 }
-var elements = document.querySelectorAll("p[data-eusebeios]");
-for(var i = 0; i < elements.length - 1; i++) { elements[i].setAttribute("data-eusebeios", convertToGreek(elements[i].getAttribute("data-eusebeios"))); }
+var elements = document.querySelectorAll('p[data-eusebeios]');
+for(var i = 0; i < elements.length; i++) {
+  elements[i].setAttribute('data-eusebeios', convertToGreek(elements[i].getAttribute('data-eusebeios')));
+}
+/* Create an example fragment. */
+var v1 = document.querySelector('.verse:has(.word[data-chapter="5"][data-verse="1"])').cloneNode(true);
+var v2 = document.querySelector('.verse:has(.word[data-chapter="5"][data-verse="2"])').cloneNode(true);
+document.querySelector('.article .example .page').appendChild(v1);
+document.querySelector('.article .example .page').appendChild(v2);
+var notes = document.querySelectorAll('.article .example .footnote');
+for(var i = 0; i < notes.length; i++) {
+  document.querySelector('.article .example .notes').appendChild(notes[i]);
+}
 </script>
