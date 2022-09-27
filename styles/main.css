@@ -17,6 +17,7 @@
 }
 @page {
   size: B5 portrait;
+  margin-bottom: 1em;
   @footnotes {
     border-top: solid var(--nigrica) .5px;
     padding-top: 1em;
@@ -28,11 +29,13 @@
     font-family: iosevka;
     font-size: var(--medium-size);
     color: var(--didascalia);
+    margin-top: 1em;
   }
   @top-right {
     font-family: iosevka;
     font-size: var(--medium-size);
     color: var(--didascalia);
+    margin-top: 1em;
   }
 }
 @page:first {
@@ -63,6 +66,8 @@ article {
   break-before: recto;
   break-after: verso;
   counter-reset: h2;
+  margin: 0;
+  padding: 0;
 }
 p {
   margin: 0;
