@@ -171,14 +171,14 @@ code {
   text-indent: 1em;
   text-align: justify;
 }
-.article dl dt:before {
+.article dl.dict dt:before {
   content: "";
   display: block;
 }
 .article dl.dict dt {
   font-family: iosevka;
 }
-.article dl dt, .article dl dd {
+.article dl.dict dt, .article dl.dict dd {
   display: inline;
 }
 .article h1 {
@@ -372,4 +372,13 @@ code {
 }
 .criticism::footnote-marker {
   content: attr(data-chapter) "." attr(data-verse);
+}
+
+/* LAST */
+.last section {
+  margin-top: 7cm;
+  text-align: center;
+  color: var(--didascalia);
+  font-family: greek, f1, f2, f3;
+  line-height: 1.4em;
 }
