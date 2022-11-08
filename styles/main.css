@@ -278,6 +278,11 @@ code {
     content: counter(page);
   }
 }
+.reference {
+  color: var(--didascalia);
+  font-family: iosevka;
+  font-size: var(--small-size) !important;
+}
 .criticism {
   color: var(--didascalia);
 }
@@ -371,6 +376,9 @@ code {
   content: attr(data-chapter) "." attr(data-verse);
 }
 .criticism::footnote-marker {
+  content: attr(data-chapter) "." attr(data-verse);
+}
+.reference::footnote-marker {
   content: attr(data-chapter) "." attr(data-verse);
 }
 

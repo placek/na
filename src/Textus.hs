@@ -6,7 +6,7 @@ import           Polysemy               (Members, Sem, runM)
 import           Textus.DB              (Commentary, DB, Word, interpretDB,
                                          readAllBookCommentaries,
                                          readAllBookLatinVerses,
-                                         readAllBookWords, toVolume, Latin)
+                                         readAllBookWords, toVolume, Latin, readAllBookReferences, Reference)
 import           Textus.Log             (Log, interpretLog, logDebug)
 import           Textus.Mustache        (interpretMustache, renderTemplate)
 
@@ -28,6 +28,12 @@ getJohnComments conn = do
   logDebug $ "found " <> (pack . show . Prelude.length $ johnComments) <> " comments."
   return johnComments
 
+getJohnReferences :: Members '[DB, Log] r => Connection -> Sem r [Textus.DB.Reference]
+getJohnReferences conn = do
+  johnComments <- readAllBookReferences conn 500
+  logDebug $ "found " <> (pack . show . Prelude.length $ johnComments) <> " references."
+  return johnComments
+
 app :: IO ()
 app = do
   conn <- open "db.sqlite"
@@ -35,6 +41,6 @@ app = do
     ls <- getJohnLatinVerses conn
     ws <- getJohnWords conn
     cs <- getJohnComments conn
-    renderTemplate $ toVolume ws cs ls
-    -- logDebug . pack . show $ toVolume ws cs
+    rs <- getJohnReferences conn
+    renderTemplate $ toVolume ws rs cs ls
   close conn

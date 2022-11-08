@@ -20,7 +20,7 @@ result.html: $(pages)
 volume.html: build
 	cabal run > $@
 	@echo "FIXME: removing html entities with actual chars"
-	sed -i '1,4d'         $@
+	sed -i '1,5d'         $@
 	sed -i 's/&amp;/\&/g' $@
 	sed -i 's/&lt;/</g'   $@
 	sed -i 's/&gt;/>/g'   $@
