@@ -2,9 +2,10 @@
 
 pages := static/00-header.html \
 				 static/01-titlepage.html \
-				 static/02-format.html \
-				 static/03-koine.html \
-				 static/04-j.html \
+				 static/02-intro.html \
+				 static/03-format.html \
+				 static/04-koine.html \
+				 static/05-j.html \
 				 volume.html \
 				 static/99-footer.html
 
