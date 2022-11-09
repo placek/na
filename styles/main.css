@@ -146,6 +146,9 @@ code {
 }
 
 /* ARTICLES */
+@page article {
+  margin-bottom: 1.5em;
+}
 @page article:left {
   @top-left {
     content: counter(page, upper-roman);
