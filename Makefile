@@ -1,4 +1,4 @@
-.PHONY: clean edit
+.PHONY: clean
 
 pages := static/00-header.html \
 				 static/01-titlepage.html \
@@ -9,12 +9,21 @@ pages := static/00-header.html \
 				 volume.html \
 				 static/99-footer.html
 
-result.pdf:
+ebook.pdf:
 
 %.pdf: %.html
 	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -j -o /data/$@ /data/$<
 
-result.html: $(pages)
+result.pdf: ebook.html
+	sed -i '/^@page {$$/a marks: crop cross;' styles/main.css
+	sed -i '/^@page {$$/a bleed: 5mm;' styles/main.css
+	sed -i '/^@page {$$/a -prince-trim: 5mm;' styles/main.css
+	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -j -o /data/$@ /data/$<
+
+book.pdf: result.pdf
+	gs -dPDFX -dBATCH -dNOPAUSE -dNOOUTERSAVE -dNoOutputFonts -sDEVICE=pdfwrite -sColorConversionStrategy=CMYK -dProcessColorModel=/DeviceCMYK -dCompatibilityLevel=1.4 -dPDFSETTINGS=/prepress -dHaveTransparency=false -sOutputFile="$@" $<
+
+ebook.html: $(pages)
 	cat $? > $@
 
 volume.html: build
@@ -30,4 +39,7 @@ build:
 	cabal build
 
 clean:
-	rm -rf volume.html result.html result.pdf
+	rm -rf volume.html ebook.html ebook.pdf book.pdf result.pdf
+	sed -i '/^marks: crop cross;/d' styles/main.css
+	sed -i '/^bleed: 5mm;/d' styles/main.css
+	sed -i '/^-prince-trim: 5mm;/d' styles/main.css

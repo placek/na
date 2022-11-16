@@ -5,5 +5,6 @@ import ./nix/shell.nix {
     pkgs.sqlite
     pkgs.poppler_utils
     pkgs.okular
+    pkgs.pdftk
   ];
 }
