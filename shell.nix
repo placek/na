@@ -6,5 +6,6 @@ import ./nix/shell.nix {
     pkgs.poppler_utils
     pkgs.okular
     pkgs.pdftk
+    pkgs.haskellPackages.mustache
   ];
 }
