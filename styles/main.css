@@ -16,26 +16,25 @@
   --medium-size: .8em;
 }
 @page {
-  size: B5 portrait;
-  margin-bottom: 1em;
+  size: 165mm 235mm portrait;
+  margin: 10mm 7mm 5mm 7mm;
+  padding: 5mm;
   @footnotes {
     border-top: solid var(--nigrica) .5px;
-    padding-top: 1em;
-    margin-top: 1em;
-    padding-bottom: 0;
-    margin-bottom: 0;
+    padding: 3mm 0 0 0;
+    margin: 0;
   }
   @top-left {
     font-family: iosevka;
     font-size: var(--medium-size);
     color: var(--didascalia);
-    margin-top: 1em;
+    margin-top: 5mm;
   }
   @top-right {
     font-family: iosevka;
     font-size: var(--medium-size);
     color: var(--didascalia);
-    margin-top: 1em;
+    margin-top: 5mm;
   }
 }
 @page:first {
@@ -50,13 +49,13 @@
 *::footnote-marker {
   margin-right: var(--small-size);
   font-family: iosevka;
-  font-size: var(--medium-size);
+  font-size: var(--small-size);
 }
 
 body {
   font-size: var(--normal-size);
   color: var(--nigrica);
-  font-family: cardo;
+  font-family: cardo, serif;
 }
 a {
   text-decoration: none;
@@ -146,21 +145,12 @@ code {
 }
 
 /* ARTICLES */
-@page article {
-  margin-bottom: 1.5em;
-}
 @page article:left {
-  @top-left {
-    content: counter(page, upper-roman);
-  }
+  @top-left { content: counter(page, upper-roman); }
 }
 @page article:right {
-  @top-left {
-    content: string(chapter-title);
-  }
-  @top-right{
-    content: counter(page, upper-roman);
-  }
+  @top-left { content: string(chapter-title); }
+  @top-right{ content: counter(page, upper-roman); }
 }
 @page article:blank {
   @top-left  { display: none; }
@@ -168,6 +158,7 @@ code {
 }
 .article {
   page: article;
+  font-size: calc(var(--normal-size) - 1pt);
 }
 .article p {
   margin: var(--small-size) 0;
@@ -333,7 +324,7 @@ code {
   color: var(--nigrica);
   font-family: greek, f1, f2, f3;
   -prince-float: outside;
-  -prince-margin-outside: -3.5em;
+  -prince-margin-outside: -2.5em;
 }
 .book .verse[data-eusebeios="0"]:before {
   content: none;
@@ -378,16 +369,13 @@ code {
 .latin::footnote-marker {
   content: attr(data-chapter) "." attr(data-verse);
 }
-.criticism::footnote-marker {
-  content: attr(data-chapter) "." attr(data-verse);
-}
-.reference::footnote-marker {
-  content: attr(data-chapter) "." attr(data-verse);
+.criticism::footnote-marker, .reference::footnote-marker {
+  content: "";
 }
 
 /* LAST */
 .last section {
-  margin-top: 7cm;
+  margin-top: 55mm;
   text-align: center;
   color: var(--didascalia);
   font-family: greek, f1, f2, f3;
