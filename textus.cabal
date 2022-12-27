@@ -17,6 +17,7 @@ library
   exposed-modules:    Textus
                     , Textus.Log
                     , Textus.DB
+                    , Textus.Typeset.DB
                     , Textus.Mustache
   hs-source-dirs:     src
   build-depends:      base >= 4 && < 5
