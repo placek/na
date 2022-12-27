@@ -14,30 +14,30 @@ import           Textus.Mustache        (interpretMustache, renderTemplate)
 
 getLatinVerses :: Members '[DB, Log] r => Connection -> BookID -> Sem r [Textus.DB.Latin]
 getLatinVerses conn book = do
-  johnVerses <- readAllBookLatinVerses conn book
-  logDebug $ "found " <> (pack . show . Prelude.length $ johnVerses) <> " verses."
-  return johnVerses
+  entities <- readAllBookLatinVerses conn book
+  logDebug $ "found " <> (pack . show . Prelude.length $ entities) <> " verses."
+  return entities
 
 getWords :: Members '[DB, Log] r => Connection -> BookID -> Sem r [Textus.DB.Word]
 getWords conn book = do
-  johnWords <- readAllBookWords conn book
-  logDebug $ "found " <> (pack . show . Prelude.length $ johnWords) <> " words."
-  return johnWords
+  entities <- readAllBookWords conn book
+  logDebug $ "found " <> (pack . show . Prelude.length $ entities) <> " words."
+  return entities
 
 getComments :: Members '[DB, Log] r => Connection -> BookID -> Sem r [Textus.DB.Commentary]
 getComments conn book = do
-  johnComments <- readAllBookCommentaries conn book
-  logDebug $ "found " <> (pack . show . Prelude.length $ johnComments) <> " comments."
-  return johnComments
+  entities <- readAllBookCommentaries conn book
+  logDebug $ "found " <> (pack . show . Prelude.length $ entities) <> " comments."
+  return entities
 
 getReferences :: Members '[DB, Log] r => Connection -> BookID -> Sem r [Textus.DB.Reference]
 getReferences conn book = do
-  johnComments <- readAllBookReferences conn book
-  logDebug $ "found " <> (pack . show . Prelude.length $ johnComments) <> " references."
-  return johnComments
+  entities <- readAllBookReferences conn book
+  logDebug $ "found " <> (pack . show . Prelude.length $ entities) <> " references."
+  return entities
 
-app :: String -> IO ()
-app bookID = do
+typeset :: String -> IO ()
+typeset bookID = do
   conn <- open "db.sqlite"
   runM . interpretDB . interpretLog . interpretMustache $ do
     ls <- getLatinVerses conn $ read bookID

@@ -29,7 +29,7 @@ pages_after :=  99-footer.part
 	haskell-mustache $< meta.json > $@
 
 50-%.part: build
-	cabal run textus -- $* > $@
+	cabal run typeset -- $* > $@
 	@echo "FIXME: removing html entities with actual chars"
 	sed -i '1,5d'         $@
 	sed -i 's/&amp;/\&/g' $@

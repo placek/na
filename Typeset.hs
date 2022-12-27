@@ -1,9 +1,9 @@
 module Main where
 
 import           System.Environment (getArgs)
-import           Textus             (app)
+import           Textus             (typeset)
 
 main :: IO ()
 main = do
   args <- getArgs
-  app $ head args
+  typeset $ head args
