@@ -1,6 +1,9 @@
 module Main where
 
-import           Textus
+import           System.Environment (getArgs)
+import           Textus             (app)
 
 main :: IO ()
-main = app
+main = do
+  args <- getArgs
+  app $ head args

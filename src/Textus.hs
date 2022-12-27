@@ -3,44 +3,46 @@ module Textus where
 import           Data.Text              (pack)
 import           Database.SQLite.Simple (Connection, close, open)
 import           Polysemy               (Members, Sem, runM)
-import           Textus.DB              (Commentary, DB, Word, interpretDB,
+import           Textus.DB              (BookID (..), Commentary, DB, Latin,
+                                         Reference, Word, interpretDB,
                                          readAllBookCommentaries,
                                          readAllBookLatinVerses,
-                                         readAllBookWords, toVolume, Latin, readAllBookReferences, Reference)
+                                         readAllBookReferences,
+                                         readAllBookWords, toVolume)
 import           Textus.Log             (Log, interpretLog, logDebug)
 import           Textus.Mustache        (interpretMustache, renderTemplate)
 
-getJohnLatinVerses :: Members '[DB, Log] r => Connection -> Sem r [Textus.DB.Latin]
-getJohnLatinVerses conn = do
-  johnVerses <- readAllBookLatinVerses conn 500
+getLatinVerses :: Members '[DB, Log] r => Connection -> BookID -> Sem r [Textus.DB.Latin]
+getLatinVerses conn book = do
+  johnVerses <- readAllBookLatinVerses conn book
   logDebug $ "found " <> (pack . show . Prelude.length $ johnVerses) <> " verses."
   return johnVerses
 
-getJohnWords :: Members '[DB, Log] r => Connection -> Sem r [Textus.DB.Word]
-getJohnWords conn = do
-  johnWords <- readAllBookWords conn 500
+getWords :: Members '[DB, Log] r => Connection -> BookID -> Sem r [Textus.DB.Word]
+getWords conn book = do
+  johnWords <- readAllBookWords conn book
   logDebug $ "found " <> (pack . show . Prelude.length $ johnWords) <> " words."
   return johnWords
 
-getJohnComments :: Members '[DB, Log] r => Connection -> Sem r [Textus.DB.Commentary]
-getJohnComments conn = do
-  johnComments <- readAllBookCommentaries conn 500
+getComments :: Members '[DB, Log] r => Connection -> BookID -> Sem r [Textus.DB.Commentary]
+getComments conn book = do
+  johnComments <- readAllBookCommentaries conn book
   logDebug $ "found " <> (pack . show . Prelude.length $ johnComments) <> " comments."
   return johnComments
 
-getJohnReferences :: Members '[DB, Log] r => Connection -> Sem r [Textus.DB.Reference]
-getJohnReferences conn = do
-  johnComments <- readAllBookReferences conn 500
+getReferences :: Members '[DB, Log] r => Connection -> BookID -> Sem r [Textus.DB.Reference]
+getReferences conn book = do
+  johnComments <- readAllBookReferences conn book
   logDebug $ "found " <> (pack . show . Prelude.length $ johnComments) <> " references."
   return johnComments
 
-app :: IO ()
-app = do
+app :: String -> IO ()
+app bookID = do
   conn <- open "db.sqlite"
   runM . interpretDB . interpretLog . interpretMustache $ do
-    ls <- getJohnLatinVerses conn
-    ws <- getJohnWords conn
-    cs <- getJohnComments conn
-    rs <- getJohnReferences conn
+    ls <- getLatinVerses conn $ read bookID
+    ws <- getWords conn $ read bookID
+    cs <- getComments conn $ read bookID
+    rs <- getReferences conn $ read bookID
     renderTemplate $ toVolume ws rs cs ls
   close conn

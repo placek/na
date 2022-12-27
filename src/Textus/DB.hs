@@ -4,19 +4,26 @@ module Textus.DB where
 
 import           Data.Aeson             (ToJSON)
 import           Data.List              (groupBy, sort)
-import           Data.Text              (Text)
+import           Data.Text              (Text, intercalate)
 import           Database.SQLite.Simple (Connection, FromRow (..),
                                          NamedParam ((:=)), field, queryNamed)
 import           GHC.Generics           (Generic)
 import           Polysemy               (Embed, Member, Sem, embed, interpret,
                                          makeSem)
 import           Prelude                hiding (Word)
-import Data.Text (intercalate)
+
+data BookID = Mt | Mk | Lk | J deriving Read
 
 type BookNumber     = Int
 type ChapterNumber  = Int
 type VerseNumber    = Int
 type PositionNumber = Int
+
+toNumber :: BookID -> BookNumber
+toNumber Mt = 200
+toNumber Mk = 300
+toNumber Lk = 400
+toNumber J  = 500
 
 -- database data types
 data Commentary =
@@ -128,19 +135,19 @@ instance Ord Book where
 
 -- DB effect
 data DB m a where
-  ReadAllBookCommentaries :: Connection -> BookNumber -> DB m [Commentary]
-  ReadAllBookLatinVerses  :: Connection -> BookNumber -> DB m [Latin]
-  ReadAllBookWords        :: Connection -> BookNumber -> DB m [Word]
-  ReadAllBookReferences   :: Connection -> BookNumber -> DB m [Reference]
+  ReadAllBookCommentaries :: Connection -> BookID -> DB m [Commentary]
+  ReadAllBookLatinVerses  :: Connection -> BookID -> DB m [Latin]
+  ReadAllBookWords        :: Connection -> BookID -> DB m [Word]
+  ReadAllBookReferences   :: Connection -> BookID -> DB m [Reference]
 
 makeSem ''DB
 
 interpretDB :: Member (Embed IO) r => Sem (DB ': r) a -> Sem r a
 interpretDB = interpret \case
-  ReadAllBookCommentaries c bn -> embed $ queryNamed c "SELECT * FROM `commentaries` WHERE `book`=:bn" [ ":bn" := bn ]
-  ReadAllBookLatinVerses  c bn -> embed $ queryNamed c "SELECT * FROM `latin_verses` WHERE `book`=:bn" [ ":bn" := bn ]
-  ReadAllBookWords        c bn -> embed $ queryNamed c "SELECT * FROM `words`        WHERE `book`=:bn" [ ":bn" := bn ]
-  ReadAllBookReferences   c bn -> embed $ queryNamed c "SELECT * FROM `references`   WHERE `book`=:bn" [ ":bn" := bn ]
+  ReadAllBookCommentaries c bid -> embed $ queryNamed c "SELECT * FROM `commentaries` WHERE `book`=:bn" [ ":bn" := toNumber bid ]
+  ReadAllBookLatinVerses  c bid -> embed $ queryNamed c "SELECT * FROM `latin_verses` WHERE `book`=:bn" [ ":bn" := toNumber bid ]
+  ReadAllBookWords        c bid -> embed $ queryNamed c "SELECT * FROM `words`        WHERE `book`=:bn" [ ":bn" := toNumber bid ]
+  ReadAllBookReferences   c bid -> embed $ queryNamed c "SELECT * FROM `references`   WHERE `book`=:bn" [ ":bn" := toNumber bid ]
 
 -- structure constructor
 toVolume :: [Word] -> [Reference] -> [Commentary] -> [Latin] -> Volume

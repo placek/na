@@ -1,40 +1,35 @@
 .PHONY: clean
 
-pages := 00-header.html \
-				 01-titlepage.html \
-				 02-intro.html \
-				 03-format.html \
-				 04-koine.html \
-				 05-j.html \
-				 volume.html \
-				 99-footer.html
+pages_before := 00-header.part \
+								01-titlepage.part \
+								02-intro.part \
+								03-format.part \
+								04-koine.part
+pages_after :=  99-footer.part
 
-ebook.pdf:
-
-%.pdf: %.html
-	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -j -o /data/$@ /data/$<
-
-result.pdf: ebook.html
+%-book.pdf: %.html
 	@echo "FIXME: css injection"
 	sed -i '/^@page {$$/a marks: crop cross;' styles/main.css
 	sed -i '/^@page {$$/a bleed: 5mm;' styles/main.css
 	sed -i '/^@page {$$/a -prince-trim: 5mm;' styles/main.css
-	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -j -o /data/$@ /data/$<
+	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -j -o /data/tmp.pdf /data/$<
+	gs -dPDFX -dBATCH -dNOPAUSE -dNOOUTERSAVE -dNoOutputFonts -sDEVICE=pdfwrite -sColorConversionStrategy=CMYK -dProcessColorModel=/DeviceCMYK -dCompatibilityLevel=1.4 -dPDFSETTINGS=/prepress -dHaveTransparency=false -sOutputFile="$@" tmp.pdf
 	sed -i '/^marks: crop cross;/d' styles/main.css
 	sed -i '/^bleed: 5mm;/d' styles/main.css
 	sed -i '/^-prince-trim: 5mm;/d' styles/main.css
+	rm -rf tmp.pdf
 
-book.pdf: result.pdf
-	gs -dPDFX -dBATCH -dNOPAUSE -dNOOUTERSAVE -dNoOutputFonts -sDEVICE=pdfwrite -sColorConversionStrategy=CMYK -dProcessColorModel=/DeviceCMYK -dCompatibilityLevel=1.4 -dPDFSETTINGS=/prepress -dHaveTransparency=false -sOutputFile="$@" $<
+%.pdf: %.html
+	docker run --rm -v "`pwd`":/data michaelperrin/prince:latest -j -o /data/$@ /data/$<
 
-ebook.html: $(pages)
+%.html: $(pages_before) 50-%.part $(pages_after)
 	cat $? > $@
 
-%.html: static/%.html.mustache
+%.part: static/%.html.mustache
 	haskell-mustache $< meta.json > $@
 
-volume.html: build
-	cabal run > $@
+50-%.part: build
+	cabal run textus -- $* > $@
 	@echo "FIXME: removing html entities with actual chars"
 	sed -i '1,5d'         $@
 	sed -i 's/&amp;/\&/g' $@
@@ -46,4 +41,4 @@ build:
 	cabal build
 
 clean:
-	rm -rf *.html *.pdf
+	rm -rf *.html *.part *.pdf
