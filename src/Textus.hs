@@ -4,7 +4,7 @@ import           Data.Text              (pack)
 import           Database.SQLite.Simple (Connection, close, open)
 import           Polysemy               (Members, Sem, runM)
 import           Textus.DB              (BookID (..))
-import           Textus.Log             (Log, interpretLog, logDebug)
+import           Textus.Log             (Log, interpretLog, logDebug, logInfo)
 import           Textus.Mustache        (interpretMustache, renderTemplate)
 import           Textus.Typeset.DB      as TDB (Commentary, DB, Latin,
                                                 Reference, Word, interpretDB,
@@ -12,6 +12,13 @@ import           Textus.Typeset.DB      as TDB (Commentary, DB, Latin,
                                                 readAllBookLatinVerses,
                                                 readAllBookReferences,
                                                 readAllBookWords, toVolume)
+import qualified Textus.Compare.DB as CDB
+
+getVerses :: Members '[CDB.DB, Log] r => Connection -> BookID -> Sem r [CDB.Verse]
+getVerses conn book = do
+  entities <- CDB.readAllBookVerses conn book
+  logDebug $ "found " <> (pack . show . Prelude.length $ entities) <> " verses."
+  return entities
 
 getLatinVerses :: Members '[TDB.DB, Log] r => Connection -> BookID -> Sem r [TDB.Latin]
 getLatinVerses conn book = do
@@ -47,3 +54,12 @@ typeset bookID = do
     rs <- getReferences conn $ read bookID
     renderTemplate $ TDB.toVolume ws rs cs ls
   close conn
+
+compare :: String -> IO ()
+compare bookID = do
+  db1 <- open "db/01.sqlite"
+  runM . CDB.interpretDB . interpretLog $ do
+    vs <- getVerses db1 $ read bookID
+    logInfo $ pack . show $ vs
+    return ()
+  close db1
