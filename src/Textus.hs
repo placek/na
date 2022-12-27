@@ -58,8 +58,14 @@ typeset bookID = do
 compare :: String -> IO ()
 compare bookID = do
   db1 <- open "db/01.sqlite"
+  db2 <- open "db/02.sqlite"
+  db3 <- open "db/03.sqlite"
   runM . CDB.interpretDB . interpretLog $ do
-    vs <- getVerses db1 $ read bookID
-    logInfo $ pack . show $ vs
+    vs1 <- getVerses db1 $ read bookID
+    vs2 <- getVerses db2 $ read bookID
+    vs3 <- getVerses db3 $ read bookID
+    logInfo . pack . show . CDB.fromVerses $ vs2 ++ vs1 ++ vs3 -- intended order
     return ()
   close db1
+  close db2
+  close db3
