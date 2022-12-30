@@ -1,67 +1,95 @@
-{-# LANGUAGE DeriveGeneric #-}
-
 module Textus.Compare.DB where
 
-import           Data.Aeson             (ToJSON)
-import           Data.Text              (Text)
-import           Database.SQLite.Simple (Connection, FromRow (..),
-                                         NamedParam ((:=)), field, queryNamed)
-import           GHC.Generics           (Generic)
-import           Polysemy               (Embed, Member, Sem, embed, interpret,
-                                         makeSem)
-import           Prelude                hiding (Word)
-import           Textus.DB              (BookID, BookNumber, ChapterNumber,
-                                         VerseNumber, toNumber)
-import Data.List (group, sort)
+import           Data.Text                        (Text)
+import           Database.SQLite.Simple           (Connection,
+                                                   NamedParam ((:=)),
+                                                   queryNamed)
+import           Database.SQLite.Simple.FromField
+import           Polysemy                         (Embed, Member, Sem, embed,
+                                                   interpret, makeSem)
+import           Text.Regex.Pcre2                 (gsub)
+import           Textus.DB
 
--- database data types
-data Verse =
-  Verse
-    { vBookNumber    :: BookNumber
-    , vChapterNumber :: ChapterNumber
-    , vVerseNumber   :: VerseNumber
-    , vText          :: Text
-    } deriving (Show, Generic)
-
-data Comparison =
-  Comparison
-    { cBookNumber    :: BookNumber
-    , cChapterNumber :: ChapterNumber
-    , cVerseNumber   :: VerseNumber
-    , cNaText        :: Text
-    , cReadersText   :: Text
-    , cPolishText    :: Text
-    } deriving (Eq, Show, Generic)
-
--- ToJSON instances
-instance ToJSON Textus.Compare.DB.Comparison
-
--- FromRow instances
-instance FromRow Verse where
-  fromRow = Verse <$> field <*> field <*> field <*> field
-
--- instances
-instance Eq Verse where
-  (Verse a b c _) == (Verse d e f _) = a == d && b == e && c == f
-
-instance Ord Verse where
-  compare (Verse a b c _) (Verse d e f _) = compare (a, b, c) (d, e, f)
-
--- DB effect
 data DB m a where
-  ReadAllBookVerses :: Connection -> BookID -> DB m [Verse]
+  ReadAllBookVerses :: (FromField b)
+                    => Connection
+                    -> BookID
+                    -> DB m [Value b]
 
 makeSem ''DB
 
-interpretDB :: Member (Embed IO) r => Sem (DB ': r) a -> Sem r a
+interpretDB :: (Member (Embed IO) r)
+            => Sem (DB ': r) a
+            -> Sem r a
 interpretDB = interpret \case
   ReadAllBookVerses  c bid -> embed $ queryNamed c "SELECT * FROM `verses` WHERE `book_number`=:bn" [ ":bn" := toNumber bid ]
 
--- utils
+-- sanitization of the text
+type Filter = [(Text, Text)]
 
-fromVerses :: [Verse] -> [Comparison]
-fromVerses verses = toComparison <$> (group . sort) verses
+readersFilter :: Filter
+readersFilter = [ ("<f>.*?</f>",   ""   )
+                , ("<S>.*?</S>",   ""   )
+                , ("<m>.*?</m>",   ""   )
+                , ("<e>(.*?)</e>", "\1" )
+                , ("<pb/>",        ""   )
+                , ("<t>(.*?)</t>", "\1" )
+                , ("<br/>",        ""   )
+                , ("\\s+",         " "  )
+                ]
 
-toComparison :: [Verse] -> Comparison
-toComparison [a, b, c] = Comparison (vBookNumber a) (vChapterNumber a) (vVerseNumber a) (vText a) (vText b) (vText c)
-toComparison _         = error "nope"
+naFilter :: Filter
+naFilter = [ ("<f>(.*?)</f>", "\1" )
+           , ("<e>(.*?)</e>", "\1" )
+           , ("<pb/>",        ""   )
+           , ("\\*",          ""   )
+           , ("\\[(.*?)\\]",  "\1" )
+           , ("<t>(.*?)</t>", "\1" )
+           , ("\\s+",         " "  )
+           ]
+
+polishFilter :: Filter
+polishFilter = [ ("\\[.*?\\]", "" )
+               , ("\\s+",      " " )
+               ]
+
+sanitizeVolume :: Filter
+             -> Volume Text
+             -> Volume Text
+sanitizeVolume = flip $ foldr applyFilter
+  where applyFilter :: (Text, Text) -> Volume Text -> Volume Text
+        applyFilter (pattern, replacement) b = fmap (gsub pattern replacement) b
+
+-- Comparison
+data Comparison =
+  Comparison
+    { naVolume            :: Volume Text
+    , readersVolume       :: Volume Text
+    , polishVolume        :: Volume Text
+    , strongCodes         :: Volume Int
+    , morphologyCodes     :: Volume Text
+    , wordsOfJesusMarkers :: Volume Bool
+    } deriving Show
+
+data Word =
+  Word
+    { wAddress        :: Address
+    , wNaText         :: Text
+    , wReadersText    :: Text
+    , wPolishText     :: Text
+    , wStrongCode     :: Int
+    , wMorphologyCode :: Text
+    , wWordOfJesus    :: Bool
+    } deriving Show
+
+type Words = [Textus.Compare.DB.Word]
+
+toWords :: Comparison -> Words
+toWords (Comparison n r p s m j) = toWord <$> merge6 ns rs ps ss ms js
+  where ns = toTuple <$> to n
+        rs = toTuple <$> to r
+        ps = toTuple <$> to p
+        ss = toTuple <$> to s
+        ms = toTuple <$> to m
+        js = toTuple <$> to j
+        toWord (a, (b, c, d, e, f, g)) = Word a b c d e f g

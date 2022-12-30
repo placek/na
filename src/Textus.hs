@@ -1,8 +1,9 @@
 module Textus where
 
-import           Data.Text              (pack)
+import           Data.Text              (Text, pack)
 import           Database.SQLite.Simple (Connection, close, open)
 import           Polysemy               (Members, Sem, runM)
+import qualified Textus.Compare.DB      as CDB
 import           Textus.DB              (BookID (..))
 import           Textus.Log             (Log, interpretLog, logDebug, logInfo)
 import           Textus.Mustache        (interpretMustache, renderTemplate)
@@ -12,10 +13,9 @@ import           Textus.Typeset.DB      as TDB (Commentary, DB, Latin,
                                                 readAllBookLatinVerses,
                                                 readAllBookReferences,
                                                 readAllBookWords, toVolume)
-import qualified Textus.Compare.DB as CDB
 
-getVerses :: Members '[CDB.DB, Log] r => Connection -> BookID -> Sem r [CDB.Verse]
-getVerses conn book = do
+getValues :: Members '[CDB.DB, Log] r => Connection -> BookID -> Sem r [CDB.Value Text]
+getValues conn book = do
   entities <- CDB.readAllBookVerses conn book
   logDebug $ "found " <> (pack . show . Prelude.length $ entities) <> " verses."
   return entities
@@ -61,10 +61,10 @@ compare bookID = do
   db2 <- open "db/02.sqlite"
   db3 <- open "db/03.sqlite"
   runM . CDB.interpretDB . interpretLog $ do
-    vs1 <- getVerses db1 $ read bookID
-    vs2 <- getVerses db2 $ read bookID
-    vs3 <- getVerses db3 $ read bookID
-    logInfo . pack . show . CDB.fromVerses $ vs2 ++ vs1 ++ vs3 -- intended order
+    vs1 <- getValues db1 $ read bookID
+    vs2 <- getValues db2 $ read bookID
+    vs3 <- getValues db3 $ read bookID
+    logInfo . pack . show $ CDB.merge3 (CDB.toTuple <$> vs1) (CDB.toTuple <$> vs2) (CDB.toTuple <$> vs3)
     return ()
   close db1
   close db2
